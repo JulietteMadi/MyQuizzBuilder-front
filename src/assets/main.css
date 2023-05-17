@@ -1,0 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Alkatra:wght@400;500;600;700&display=swap');
+
+:root {
+    --main-dark-color: #48485A;
+    --main-blue-color: #0033A1;
+    --main-red-color: #EA5C5E;
+
+    --second-dark-color: #747474;
+    --second-red-color: #CD5C5C;
+    --second-blue-color: #022A80;
+}
+
+h1 {
+    font-family: "Alkatra", sans-serif;
+    font-weight: 700;
+    color: var(--main-blue-color);
+}
+
+h2 {
+    font-family: "Alkatra", sans-serif;
+    color: var(--main-red-color);
+}
+
+h3 {
+    font-family: "Nunito", sans-serif;
+    color: var(--main-blue-color);
+    font-weight: 700;
+    font-size: x-large;
+}
+
+p {
+    font-family: "Nunito", sans-serif;
+}
+
+.blue-background {
+    background-color: var(--main-blue-color);
+}
+
+.red-background {
+    background-color: var(--main-red-color);
+}
+
+.alkatra-font {
+    font-family: 'Alkatra', sans-serif;
+    font-weight: bold;
+}
+
+.outlined {
+    border: 1px solid #DCDCDC;
+    border-radius: 5px;
+}
+
+.primary-button {
+    background-color: var(--main-blue-color);
+    color: white;
+}
+
+.secundary-button {
+    background-color: var(--main-red-color);
+    color: white;
+    border: none;
+    padding: 5px 10px;
+}
+
+.secundary-button:hover {
+    background-color: var(--second-red-color);
+    color: white;
+}
+
+.primary-button:hover {
+    background-color: var(--second-blue-color);
+    color: white;
+}
+
+.clickable-icon {
+    cursor: pointer;
+    color: var(--main-dark-color);
+}
