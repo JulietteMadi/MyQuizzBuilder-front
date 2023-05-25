@@ -5,12 +5,12 @@
             <!-- Form header -->
             <div class="row">
                 <div class="col-12 col-md-8">
-                    <label for="name" class="fs-5">Nom du Quizz</label>
+                    <label for="name" class="fs-5 mt-2">Nom du Quizz</label>
                     <input name="name" id="name" type="text" maxlength="255" class="form-control"
                         placeholder="Ex : recrutement" v-model="quizz.name">
                 </div>
                 <div class="col-12 col-md-4">
-                    <label for="image" class="fs-5">Illustration du quizz</label>
+                    <label for="image" class="fs-5 mt-2">Illustration du quizz</label>
                     <input class="form-control" type="file" id="image">
                 </div>
                 <div class="col-12 my-4">
@@ -64,7 +64,7 @@
                                 <div class="col-12">
                                     <h3>Proposez 4 réponses puis cochez la ou les bonne(s) réponse(s) :</h3>
                                 </div>
-                                <div class="col-6" v-for="(answer, i) of question.answers">
+                                <div class="col-12 col-md-6" v-for="(answer, i) of question.answers">
                                     <label :for="`answer${i}`">
                                         Réponse {{ i + 1 }}
                                     </label>
@@ -82,7 +82,9 @@
                             </div>
 
                             <div>
-                                <label :for="`answerDescription${index}`" class="form-label">Description</label>
+                                <label :for="`answerDescription${index}`" class="form-label mt-5">
+                                    <h3>Description de la ou les bonne(s) réponse(s)</h3>
+                                </label>
                                 <textarea class="form-control" :id="`answerDescription${index}`"
                                     :name="`answerDescription${index}`" rows="5"></textarea>
                             </div>
@@ -102,7 +104,7 @@
     <!-- Register new quizz button-->
     <div class="align-items-end flex-column row mb-5">
         <RouterLink to="/quizz">
-            <button class="btn primary-button mt-2 col-12 col-md-3" type="submit">
+            <button class="btn primary-button mt-2 col-12 col-md-3" type="submit" :disabled="quizz.questions.length < 5">
                 <i class="bi bi-plus-circle me-3"></i>
                 Créer un quizz
             </button>

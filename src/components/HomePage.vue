@@ -35,13 +35,13 @@
         <h2>Mes derniers quizz</h2>
         <div class="text-center">
             <div class="row g-3">
-                <div class=" col-12 col-sm-6 col-md-3" v-for="quizz in favQuizz">
+                <div class=" col-12 col-sm-6 col-lg-3" v-for="quizz in favQuizz">
                     <div class="card shadow">
                         <div class="card-header" style="height: 5rem;">
                             Some image
                         </div>
                         <div class="red-background p-2">
-                            <h4 class="text-white">{{ quizz.name }}</h4>
+                            <h5 class="text-white">{{ quizz.name }}</h5>
                         </div>
                         <div class="p-3 row">
                             <div class="col d-flex justify-content-center p-0">
@@ -82,13 +82,13 @@
         <h2>Mes derniers thèmes</h2>
         <div class="text-center">
             <div class="row g-3">
-                <div class="col-12 col-sm-6 col-md-3" v-for="topic in favTopics">
+                <div class="col-12 col-sm-6 col-lg-3" v-for="topic in favTopics">
                     <div class="card shadow">
                         <div class="card-header" style="height: 5rem;">
                             Some image
                         </div>
                         <div class="blue-background p-2">
-                            <h4 class="text-white">{{ topic.name }}</h4>
+                            <h5 class="text-white">{{ topic.name }}</h5>
                         </div>
                         <div class="p-3 row">
                             <div class="col d-flex justify-content-center p-0">
@@ -127,7 +127,7 @@
     <!-- My profile -->
     <section class="my-5">
         <h2>Mon profil</h2>
-        <div class="px-4 text-center">
+        <div class="px-4">
             <div class="row gx-5">
                 <div class="col">
                     <div class="p-3 border bg-light">Custom column padding</div>

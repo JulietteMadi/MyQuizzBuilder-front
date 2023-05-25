@@ -12,7 +12,7 @@
                 </button>
             </RouterLink>
         </div>
-        <div class="col-12 px-2">
+        <div class="col-12 p-2 mt-2">
             <input type="text" class="form-control" id="searchTopic" placeholder="Rechercher un thème"
                 v-model="searchTopic">
         </div>
@@ -20,13 +20,13 @@
 
     <!-- TopicList -->
     <div class="row my-5 mx-auto text-center">
-        <div class=" col-12 col-sm-6 col-md-3 py-3" v-for="topic in allTopics">
+        <div class=" col-12 col-sm-6 col-md-4 col-lg-3 py-3" v-for="topic in filteredTopics">
             <div class="card shadow">
                 <div class="card-header" style="height: 5rem;">
                     Some image
                 </div>
                 <div class="red-background p-2">
-                    <h4 class="text-white">{{ topic.name }}</h4>
+                    <h5 class="text-white">{{ topic.name }}</h5>
                 </div>
                 <div class="p-3 row">
                     <div class="col d-flex justify-content-center p-0">
@@ -83,7 +83,7 @@ export default {
     },
 
     computed: {
-        filteredTopic() {
+        filteredTopics() {
             const search = this.searchTopic.toLowerCase();
             if (!search) {
                 return this.allTopics;
