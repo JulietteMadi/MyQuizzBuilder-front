@@ -9,9 +9,9 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                     <div class="navbar-nav">
-                        <a class="nav-link" href="/">Accueil</a>
-                        <a class="nav-link" href="/quizz">Quizz</a>
-                        <a class="nav-link" href="/themes">Thématiques</a>
+                        <RouterLink class="nav-link" to="/">Accueil</RouterLink>
+                        <RouterLink class="nav-link" to="/quizz">Quizz</RouterLink>
+                        <RouterLink class="nav-link" to="/themes">Thématiques</RouterLink>
                     </div>
                 </div>
             </nav>
@@ -30,3 +30,6 @@
     color: var(--main-red-color);
 }
 </style>
+<script>
+import { RouterLink } from 'vue-router';
+</script>

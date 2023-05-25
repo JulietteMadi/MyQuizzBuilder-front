@@ -1,4 +1,33 @@
 <template>
+    <!-- Modal for demo -->
+    <div v-if="disclaimer" class="row my-3 d-flex justify-content-center">
+        <h5 class="text-center col-12">
+            Bienvenue sur la démo MyQuizzBuilder !
+        </h5>
+        <button type="button" class="btn primary-button col-12 col-md-3" data-bs-toggle="modal" data-bs-target="#demoModal">
+            Cliquez ici pour en savoir plus
+        </button>
+    </div>
+    <div class="modal fade" id="demoModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Demo de MyQuizzBuilder</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    Ce projet est une simple démonstration. C'est pourquoi, vos interactions avec l'interface n'auront pas
+                    d'effets sur celle-ci : vous pouvez créer un quizz en entier, mais en revenant sur la liste des quizz
+                    vous ne le retrouverez pas. <br>
+                    Je compte sur vous pour me remonter des suggesions, améliorations ou bugs !
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">J'ai compris</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <h1>Mon tableau de bord</h1>
     <section class="my-5">
 
@@ -116,21 +145,30 @@ import { RouterLink } from "vue-router";
 
 export default {
     data() {
-        return {
-            favQuizz: [
-                { id: 1, name: "Recrutement" },
-                { id: 2, name: "Onboarding" },
-                { id: 3, name: "Sensibilisation" },
-                { id: 4, name: "RSE en grand groupe" }
-            ],
-            favTopics: [
-                { id: 1, name: "RH" },
-                { id: 2, name: "Administratif" },
-                { id: 3, name: "Travailleurs étrangers" },
-                { id: 4, name: "Inclusion managériale" }
-            ]
+        if (import.meta.env.MODE === "demo") {
+            return {
+                favQuizz: [
+                    { id: 1, name: "Recrutement" },
+                    { id: 2, name: "Onboarding" },
+                    { id: 3, name: "Sensibilisation" },
+                    { id: 4, name: "RSE en grand groupe" }
+                ],
+                favTopics: [
+                    { id: 1, name: "RH" },
+                    { id: 2, name: "Administratif" },
+                    { id: 3, name: "Travailleurs étrangers" },
+                    { id: 4, name: "Inclusion managériale" }
+                ],
+                disclaimer: true,
+            }
+        } else {
+            return {
+                favQuizz: [],
+                favTopics: [],
+                disclaimer: false,
+            };
         }
-    }
+    },
 }
 </script>
 

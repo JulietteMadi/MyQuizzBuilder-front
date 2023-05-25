@@ -5,6 +5,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "dev:demo": "vite --config ./vite.config.demo.js",
+    "build:demo": "vite build --config ./vite.config.demo.js",
+    "deploy:demo": "git add docs && git commit -m \"MEP demo\"",
     "preview": "vite preview"
   },
   "dependencies": {

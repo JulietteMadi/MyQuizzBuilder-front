@@ -59,19 +59,26 @@
 import { RouterLink } from 'vue-router';
 export default {
     data() {
-        return {
-            allTopics: [
-                { id: 1, name: "Recrutement" },
-                { id: 2, name: "Onboarding" },
-                { id: 3, name: "Sensibilisation" },
-                { id: 4, name: "RSE en grand groupe" },
-                { id: 5, name: "Jeunes entrepreneurs" },
-                { id: 6, name: "Parité en entreprise" },
-                { id: 7, name: "Formations internes" },
-                { id: 8, name: "Rédaction de fiche emploi" },
-                { id: 9, name: "Sélectionner les CV" }
-            ],
-            searchTopic: ""
+        if (import.meta.env.MODE === "demo") {
+            return {
+                allTopics: [
+                    { id: 1, name: "Recrutement" },
+                    { id: 2, name: "Onboarding" },
+                    { id: 3, name: "Sensibilisation" },
+                    { id: 4, name: "RSE en grand groupe" },
+                    { id: 5, name: "Jeunes entrepreneurs" },
+                    { id: 6, name: "Parité en entreprise" },
+                    { id: 7, name: "Formations internes" },
+                    { id: 8, name: "Rédaction de fiche emploi" },
+                    { id: 9, name: "Sélectionner les CV" }
+                ],
+                searchTopic: "",
+            };
+        } else {
+            return {
+                allTopics: [],
+                searchTopic: ""
+            };
         }
     },
 
