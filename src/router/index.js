@@ -27,6 +27,11 @@ const router = createRouter({
             path: '/creer-quizz',
             name: 'creerQuizz',
             component: () => import('../components/quizz/CreateQuizz.vue')
+        },
+        {
+            path: '/connexion',
+            name: 'signIn',
+            component: () => import('../components/commons/SignIn.vue')
         }
     ]
 })

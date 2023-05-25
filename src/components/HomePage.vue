@@ -129,12 +129,11 @@
         <h2>Mon profil</h2>
         <div class="px-4">
             <div class="row gx-5">
-                <div class="col">
-                    <div class="p-3 border bg-light">Custom column padding</div>
-                </div>
-                <div class="col">
-                    <div class="p-3 border bg-light">Custom column padding</div>
-                </div>
+                <ul>
+                    <li>Pseudo : Juliette</li>
+                    <li>Dernière connexion : 24/05/2023 15:51</li>
+                    <li>Nombre de contributions : 19</li>
+                </ul>
             </div>
         </div>
     </section>

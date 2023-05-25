@@ -12,6 +12,17 @@
                         <RouterLink class="nav-link" to="/">Accueil</RouterLink>
                         <RouterLink class="nav-link" to="/quizz">Quizz</RouterLink>
                         <RouterLink class="nav-link" to="/themes">Thématiques</RouterLink>
+                        <a class="nav-link dropdown-toggle" role="button">
+                            <i class="bi bi-person-circle"></i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/MyQuizzBuilder/connexion">Action</a></li>
+                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        </ul>
                     </div>
                 </div>
             </nav>
