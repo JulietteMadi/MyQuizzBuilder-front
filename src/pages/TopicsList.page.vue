@@ -20,43 +20,16 @@
 
     <!-- TopicList -->
     <div class="row my-5 mx-auto text-center">
-        <div class=" col-12 col-sm-6 col-md-4 col-lg-3 py-3" v-for="topic in filteredTopics">
-            <div class="card shadow">
-                <div class="card-header" style="height: 5rem;">
-                    Some image
-                </div>
-                <div class="red-background p-2">
-                    <h5 class="text-white">{{ topic.name }}</h5>
-                </div>
-                <div class="p-3 row">
-                    <div class="col d-flex justify-content-center p-0">
-                        <button class="btn primary-button mt-2">
-                            <i class="bi bi-pencil-square"></i>
-                        </button>
-                    </div>
-                    <div class="col d-flex justify-content-center p-0">
-                        <button class="btn primary-button mt-2">
-                            <i class="bi bi-trash3-fill"></i>
-                        </button>
-                    </div>
-                    <div class="col d-flex justify-content-center p-0">
-                        <button class="btn primary-button mt-2">
-                            <i class="bi bi-eye"></i>
-                        </button>
-                    </div>
-                    <div class="col d-flex justify-content-center p-0">
-                        <button class="btn primary-button mt-2">
-                            <i class="bi bi-link-45deg"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
+        <div class=" col-12 col-sm-6 col-md-4 col-lg-3 py-3" v-for="(topic, index) in filteredTopics">
+            <TopicItem :topicName="topic.name" :index="index.toString()" />
         </div>
     </div>
 </template>
 
 <script>
 import { RouterLink } from 'vue-router';
+import TopicItem from '../components/topics/TopicItem.vue'
+
 export default {
     data() {
         if (import.meta.env.MODE === "demo") {
@@ -81,7 +54,9 @@ export default {
             };
         }
     },
-
+    components: {
+        TopicItem
+    },
     computed: {
         filteredTopics() {
             const search = this.searchTopic.toLowerCase();
