@@ -6,7 +6,7 @@
                 <div class="col-12">
                     <label for="name" class="fs-5">Nom du thème</label>
                     <input name="name" id="name" type="text" maxlength="255" class="form-control"
-                        placeholder="Ex : recrutement" required>
+                        placeholder="Ex : recrutement" required v-model="theme.name">
                 </div>
                 <div class="cols-12 my-4">
                     <p>Veuillez ajouter entre 5 et 50 fiches pratiques associées à ce thème.<br>
@@ -28,7 +28,7 @@
             </button>
         </div>
         <div class="align-items-end flex-column row">
-            <button class="btn primary-button mt-2 col-12 col-md-3" type="submit" :disabled="theme.guides.length < 5">
+            <button class="btn primary-button mt-2 col-12 col-md-3" type="submit">
                 <i class="bi bi-plus-circle"></i>
                 Créer un thème
             </button>
@@ -64,7 +64,7 @@ export default {
 
     methods: {
         addGuide() {
-            this.theme.guides.push({ name: '', link: '', image: '' });
+            this.theme.guides.push({ name: '', url: '', image: '' });
         },
         deleteGuide(index) {
             this.theme.guides.splice(index, 1);
@@ -76,6 +76,13 @@ export default {
             const element = document.getElementById(id)
             const tooltip = bootstrap.Tooltip.getOrCreateInstance(element);
             tooltip.enable();
+        },
+        async createTopic() {
+            console.log(this.theme);
+            const resp = await this.$http.post('/topics', this.theme);
+            if (resp.status !== 204) {
+                console.error(resp);
+            }
         }
     }
 }
