@@ -115,6 +115,26 @@ export default {
     components: {
         QuizItem,
         TopicItem
+    },
+
+    mounted() {
+        this.getAllTopics();
+    },
+
+    methods: {
+        async getAllTopics() {
+            const resp = await this.$http.get('/topics');
+            if (resp.status == 200 || resp.status == 204) {
+                this.lastTopics = resp.body;
+                if (this.lastTopics.length > 3) this.reduceArrayLength(this.lastTopics);
+            } else {
+                console.error(resp);
+            }
+        },
+
+        reduceArrayLength(array) {
+            array.splice(0, array.length - 4);
+        }
     }
 }
 </script>

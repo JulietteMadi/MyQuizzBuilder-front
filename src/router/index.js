@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { useUserStore } from "../stores/userStore.js"
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -39,6 +40,13 @@ const router = createRouter({
             component: () => import('../pages/SignUp.page.vue')
         }
     ]
+})
+
+router.beforeEach((to, from) => {
+    const userStore = useUserStore();
+    if (!userStore.isAuthenticated && to.name !== "signIn" && to.name !== "createAccount") {
+        return { name: 'signIn' }
+    }
 })
 
 export default router;

@@ -11,14 +11,13 @@
                 <div class="cols-12 my-4">
                     <p>Veuillez ajouter entre 5 et 50 fiches pratiques associées à ce thème.<br>
                         Attention au choix de l’image et du nom de la fiche, ce sont les informations que les utilisateurs
-                        du
-                        quizz verront !</p>
+                        du quizz verront !</p>
                 </div>
             </div>
 
             <!-- List of guides -->
-            <div class="row my-5 d-flex" v-for="(guide, index) in theme.guides" :key="index">
-                <GuideCreate :index="index" :guide="guide" @deleteGuide="deleteGuide" />
+            <div class="row py-3 my-5 d-flex" v-for="(guide, index) in theme.guides" :key="index">
+                <GuideCreate :index="index" :guide="guide" :token="token" @deleteGuide="deleteGuide" />
             </div>
 
             <!-- Add a guide -->
@@ -39,6 +38,8 @@
 
 <script>
 import GuideCreate from '../components/topics/GuideCreate.vue';
+import { useUserStore } from '../stores/userStore';
+import { mapStores } from 'pinia';
 
 export default {
     data() {
@@ -46,13 +47,16 @@ export default {
             theme: {
                 name: "",
                 guides: []
-            }
+            },
+            token: ""
         }
     },
     components: {
         GuideCreate
     },
     computed: {
+        ...mapStores(useUserStore),
+
         invalidForm() {
             return this.theme.guides < 4;
         }
@@ -80,10 +84,12 @@ export default {
         async createTopic() {
             console.log(this.theme);
             const resp = await this.$http.post('/topics', this.theme);
-            if (resp.status !== 204) {
+            if (resp.status == 204 || resp.status == 200) {
+                this.$router.push({ name: 'themes' });
+            } else {
                 console.error(resp);
             }
-        }
+        },
     }
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
     <header>
         <div class="fixed-top blue-background">
-            <nav class="navbar navbar-expand-md navbar-dark container-xl">
+            <nav class="navbar navbar-expand-md navbar-dark container-xl d-flex justify-content-between">
                 <div>
                     <a class="navbar-brand" href="/">
                         <span class="logo alkatra-font">My<span class="my-color">Quizz</span>Builder</span>
@@ -11,7 +11,10 @@
                         <span class="navbar-toggler-icon"></span>
                     </button>
                 </div>
-                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+
+                <!-- header when authenticated -->
+                <div v-if="usersStore.isAuthenticated" class="collapse navbar-collapse md-d-flex justify-content-end"
+                    id="navbarNavAltMarkup">
                     <div class="navbar-nav">
                         <RouterLink class="nav-link" to="/">Accueil</RouterLink>
                         <RouterLink class="nav-link" to="/quiz">Quiz</RouterLink>
@@ -22,15 +25,21 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <RouterLink class="dropdown-item" to="/MyQuizzBuilder/connexion">Action</RouterLink>
+                                    <button class="dropdown-item" @click="disconnect">Se déconnecter</button>
                                 </li>
                                 <li>
                                     <RouterLink class="dropdown-item" to="#">Another action</RouterLink>
                                 </li>
-
-                                <li><a class="dropdown-item" to="#">Something else here</a></li>
                             </ul>
                         </div>
+                    </div>
+                </div>
+
+                <!-- header when not authenticated -->
+                <div v-else class="collapse navbar-collapse md-d-flex justify-content-end" id="navbarNavAltMarkup">
+                    <div class="navbar-nav">
+                        <RouterLink class="nav-link" to="/connexion">Me connecter</RouterLink>
+                        <RouterLink class="nav-link" to="/creer-compte">Créer un compte</RouterLink>
                     </div>
                 </div>
             </nav>
@@ -40,6 +49,24 @@
 
 <script>
 import { RouterLink } from 'vue-router';
+import { useUserStore } from '../../stores/userStore';
+import { mapActions, mapStores } from 'pinia';
+
+export default {
+
+    computed: {
+        ...mapStores(useUserStore),
+        ...mapActions(useUserStore, ['reset'])
+    },
+
+    methods: {
+        disconnect() {
+            this.usersStore.reset();
+            this.$router.push({ name: 'signIn' });
+        }
+    }
+}
+
 </script>
 
 <style scoped>

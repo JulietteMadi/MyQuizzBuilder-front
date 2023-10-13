@@ -3,14 +3,14 @@
         <div class="text-danger mb-2" v-if="wrongIdentifier">Ces identifiants n'existent pas dans notre base de
             donnée</div>
         <div class="mb-3">
-            <label for="pseudo" class="form-label">E-mail ou pseudo</label>
-            <input type="text" class="form-control" id="pseudo" v-model="identifier" required>
+            <label for="pseudo" class="form-label">Pseudo</label>
+            <input type="text" class="form-control" id="pseudo" v-model="pseudo" required>
             <div id="pseudoHelp" class="form-text">Votre futur pseudo doit être unique
             </div>
         </div>
         <div class="mb-3">
-            <label for="email" class="form-label">E-mail ou pseudo</label>
-            <input type="text" class="form-control" id="email" v-model="identifier" required>
+            <label for="email" class="form-label">E-mail</label>
+            <input type="text" class="form-control" id="email" v-model="email" required>
             <div id="emailHelp" class="form-text">Renseignez votre adresse mail professionnelle ou personnelle
             </div>
         </div>
@@ -35,8 +35,18 @@ export default {
     },
 
     methods: {
-        checkIdentifier() {
-            console.log("Submit")
+        async checkIdentifier() {
+            const body = {
+                "email": this.email,
+                "name": this.pseudo,
+                "password": this.password
+            }
+            const resp = await this.$http.post('/sign-up', body);
+            if (resp.status == 204 || resp.status == 200) {
+                this.$router.push({ name: 'signIn' });
+            } else {
+                console.error(resp);
+            }
         }
     }
 }

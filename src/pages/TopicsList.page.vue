@@ -69,6 +69,20 @@ export default {
                 });
             }
         }
+    },
+
+    mounted() {
+        this.getAllTopics();
+    },
+    methods: {
+        async getAllTopics() {
+            const resp = await this.$http.get('/topics');
+            if (resp.status == 200 || resp.status == 204) {
+                this.allTopics = resp.body;
+            } else {
+                console.error(resp);
+            }
+        }
     }
 }
 </script>
