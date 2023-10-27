@@ -4,7 +4,8 @@ import App from './App.vue'
 import router from './router'
 
 import axios from './plugins/axios';
-import './assets/main.css'
+import toast from './plugins/toast'
+import './assets/main.css';
 
 const pinia = createPinia();
 const app = createApp(App);
@@ -12,5 +13,6 @@ const app = createApp(App);
 app.use(pinia);
 app.use(router);
 app.use(axios);
+app.use(toast);
 
 app.mount('#app')

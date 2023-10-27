@@ -13,8 +13,8 @@
                 </div>
 
                 <!-- header when authenticated -->
-                <div v-if="usersStore.isAuthenticated" class="collapse navbar-collapse md-d-flex justify-content-end"
-                    id="navbarNavAltMarkup">
+                <div v-if="usersStore.token || usersStore.token !== ''"
+                    class="collapse navbar-collapse md-d-flex justify-content-end" id="navbarNavAltMarkup">
                     <div class="navbar-nav">
                         <RouterLink class="nav-link" to="/">Accueil</RouterLink>
                         <RouterLink class="nav-link" to="/quiz">Quiz</RouterLink>

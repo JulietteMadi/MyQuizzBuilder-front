@@ -76,8 +76,7 @@ export default {
                 questions: []
             },
             questions: [],
-            indexDelete: 0,
-            activeIndex: null
+            indexDelete: 0
         }
     },
 
@@ -106,7 +105,6 @@ export default {
                     ],
                     answerDescription: ''
                 });
-            this.activeIndex = this.questions.length - 1;
             this.$nextTick(() => {
                 const accordionItems = this.$refs.accordionItems;
                 const lastAccordionItem = accordionItems[accordionItems.length - 1];

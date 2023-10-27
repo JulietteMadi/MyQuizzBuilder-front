@@ -3,34 +3,36 @@
         <div class="card-header topic-header" style="height: 5rem;">
         </div>
         <div class="red-background p-2">
-            <h5 class="text-white">{{ topicName }}</h5>
+            <h5 class="text-white">{{ topic.name }}</h5>
         </div>
         <div class="p-3 row">
             <div class="col d-flex justify-content-center p-0">
-                <button class="btn primary-button mt-2" :id="'modifyTopic' + index" data-bs-toggle="tooltip"
-                    data-bs-custom-class="bg-tooltip" data-bs-original-title="Modifier"
-                    @mouseover="enableTooltip(`modifyTopic${index}`)">
-                    <i class="bi bi-pencil-square"></i>
+                <button class="btn primary-button mt-2" :id="'modifyTopic' + topic.id" data-bs-custom-class="bg-tooltip"
+                    data-bs-original-title="Modifier"
+                    @click="$emit('updateTopic', topic.id), disableTooltip(`modifyTopic${topic.id}`)">
+                    <i class="bi bi-pencil-square" data-bs-toggle="tooltip"
+                        @mouseover="enableTooltip(`modifyTopic${topic.id}`)"></i>
                 </button>
             </div>
             <div class="col d-flex justify-content-center p-0">
-                <button class="btn primary-button mt-2" :id="'cancelTopic' + index" data-bs-toggle="tooltip"
-                    data-bs-custom-class="bg-tooltip" data-bs-original-title="Supprimer"
-                    @mouseover="enableTooltip(`cancelTopic${index}`)">
-                    <i class="bi bi-trash3-fill"></i>
+                <button class="btn primary-button mt-2" :id="'cancelTopic' + topic.id" data-bs-custom-class="bg-tooltip"
+                    data-bs-original-title="Supprimer" data-bs-toggle="modal" data-bs-target="#warningModalTopic"
+                    @click="$emit('deleteTopic', topic.id)">
+                    <i class="bi bi-trash3-fill" data-bs-toggle="tooltip"
+                        @mouseover="enableTooltip(`cancelTopic${topic.id}`)"></i>
                 </button>
             </div>
             <div class="col d-flex justify-content-center p-0">
-                <button class="btn primary-button mt-2" :id="'shareTopic' + index" data-bs-toggle="tooltip"
+                <button class="btn primary-button mt-2" :id="'shareTopic' + topic.id" data-bs-toggle="tooltip"
                     data-bs-custom-class="bg-tooltip" data-bs-original-title="Partager"
-                    @mouseover="enableTooltip(`shareTopic${index}`)">
+                    @mouseover="enableTooltip(`shareTopic${topic.id}`)" disabled>
                     <i class="bi bi-share-fill"></i>
                 </button>
             </div>
             <div class="col d-flex justify-content-center p-0">
-                <button class="btn primary-button mt-2" :id="'downloadTopic' + index" data-bs-toggle="tooltip"
+                <button class="btn primary-button mt-2" :id="'downloadTopic' + topic.id" data-bs-toggle="tooltip"
                     data-bs-custom-class="bg-tooltip" data-bs-original-title="Télécharger le rapport"
-                    @mouseover="enableTooltip(`downloadTopic${index}`)">
+                    @mouseover="enableTooltip(`downloadTopic${topic.id}`)" disabled>
                     <i class="bi bi-download"></i>
                 </button>
             </div>
@@ -38,10 +40,13 @@
     </div>
 </template>
 <script>
+import { useUserStore } from '../../stores/userStore';
+import { mapStores } from 'pinia';
+
 export default {
     props: {
-        topicName: {
-            type: String,
+        topic: {
+            type: Object,
             default: null
         },
         index: {
@@ -49,11 +54,21 @@ export default {
             default: null
         }
     },
+
+    computed: {
+        ...mapStores(useUserStore),
+    },
+
     methods: {
         enableTooltip(id) {
-            const element = document.getElementById(id)
+            const element = document.getElementById(id);
             const tooltip = bootstrap.Tooltip.getOrCreateInstance(element);
             tooltip.enable();
+        },
+        disableTooltip(id) {
+            const element = document.getElementById(id);
+            const tooltip = bootstrap.Tooltip.getOrCreateInstance(element);
+            tooltip.dispose();
         }
     }
 }

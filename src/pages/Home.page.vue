@@ -54,7 +54,7 @@
         <div class="text-center">
             <div class="row g-3">
                 <div class="col-12 col-sm-6 col-lg-3" v-for="(topic, index) in lastTopics">
-                    <TopicItem :topicName="topic.name" :index="index.toString()" />
+                    <TopicItem :topic="topic" :index="index.toString()" />
                 </div>
             </div>
         </div>
@@ -85,6 +85,8 @@
 import { RouterLink } from "vue-router";
 import QuizItem from "../components/quizzes/QuizItem.vue"
 import TopicItem from "../components/topics/TopicItem.vue"
+import { useUserStore } from '../stores/userStore';
+import { mapStores } from 'pinia';
 
 export default {
     data() {
@@ -121,9 +123,14 @@ export default {
         this.getAllTopics();
     },
 
+    computed: {
+        ...mapStores(useUserStore)
+    },
+
     methods: {
         async getAllTopics() {
-            const resp = await this.$http.get('/topics');
+            const headers = { 'Authorization': `Bearer ${this.usersStore.token}` }
+            const resp = await this.$http.get('/topics', { headers: headers });
             if (resp.status == 200 || resp.status == 204) {
                 this.lastTopics = resp.body;
                 if (this.lastTopics.length > 3) this.reduceArrayLength(this.lastTopics);
@@ -134,6 +141,7 @@ export default {
 
         reduceArrayLength(array) {
             array.splice(0, array.length - 4);
+            array.reverse();
         }
     }
 }

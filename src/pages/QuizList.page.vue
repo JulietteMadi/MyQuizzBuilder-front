@@ -13,7 +13,8 @@
             </RouterLink>
         </div>
     </div>
-    <div class="col-12 px-2">
+    <div class="col-12 p-2 mt-2 input-group">
+        <span class="input-group-text"><i class="bi bi-search"></i></span>
         <input type="text" class="form-control" id="searchQuiz" placeholder="Rechercher un quiz" v-model="searchQuiz">
     </div>
     <div class="row my-5 mx-auto text-center">
