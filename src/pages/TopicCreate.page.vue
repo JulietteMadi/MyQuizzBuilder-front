@@ -6,7 +6,7 @@
                 <div class="col-12">
                     <label for="name" class="fs-5">Nom du thème</label>
                     <input name="name" id="name" type="text" class="form-control" placeholder="Ex : recrutement"
-                        v-model="theme.name" :class="{ 'is-invalid': v$.theme.name.$error }">
+                        v-model="topic.name" :class="{ 'is-invalid': v$.topic.name.$error }">
                 </div>
                 <div class="cols-12 my-4">
                     <p>Veuillez ajouter entre 5 et 50 fiches pratiques associées à ce thème.<br>
@@ -16,8 +16,9 @@
             </div>
 
             <!-- List of guides -->
-            <div class="row py-3 my-5 d-flex" v-for="(guide, index) in theme.guides" :key="index">
-                <GuideCreate :index="index" :guide="guide" :availableGuides="availableGuides" @deleteGuide="deleteGuide" />
+            <div class="row py-3 my-5 d-flex" v-for="(guide, index) in topic.guides" :key="index">
+                <GuideItem :index="index" :guide="guide" :availableGuides="availableGuides" @deleteGuide="deleteGuide"
+                    @updateGuidesList="updateAvailableGuides" />
             </div>
 
             <!-- Add a guide -->
@@ -37,12 +38,11 @@
 </template>
 
 <script>
-import GuideCreate from '../components/topics/GuideCreate.vue';
+import GuideItem from '../components/topics/GuideItem.vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required, maxLength, minLength } from '@vuelidate/validators';
 import { useUserStore } from '../stores/userStore';
-import { useTopicStore } from '../stores/topicStore';
-import { mapStores, mapActions } from 'pinia';
+import { mapState } from 'pinia';
 
 export default {
     setup() {
@@ -52,7 +52,7 @@ export default {
     },
     data() {
         return {
-            theme: {
+            topic: {
                 name: "",
                 guides: []
             },
@@ -63,7 +63,7 @@ export default {
 
     validations() {
         return {
-            theme: {
+            topic: {
                 name: { required, maxLength: maxLength(100) },
                 guides: { required, maxLength: maxLength(50), minLength: minLength(5) }
             }
@@ -71,14 +71,14 @@ export default {
     },
 
     components: {
-        GuideCreate
+        GuideItem
     },
 
 
     computed: {
-        ...mapStores(useUserStore, useTopicStore),
+        ...mapState(useUserStore, ["token"]),
         invalidForm() {
-            return this.theme.guides < 4 || !this.theme.name;
+            return this.topic.guides < 4 || !this.topic.name;
         },
     },
 
@@ -88,17 +88,13 @@ export default {
     },
 
     methods: {
-        ...mapActions(useTopicStore, ['updateGuidesList']),
         addGuide() {
             this.updateAvailableGuides();
-            this.theme.guides.push({ name: '', url: '', image: '' });
+            this.topic.guides.push({ name: '', url: '', image: '' });
         },
         deleteGuide(index) {
-            this.theme.guides.splice(index, 1);
+            this.topic.guides.splice(index, 1);
             this.updateAvailableGuides();
-        },
-        createTopic() {
-            this.$router.push({ name: "themes" })
         },
         enableTooltip(id) {
             const element = document.getElementById(id)
@@ -106,19 +102,20 @@ export default {
             tooltip.enable();
         },
         updateAvailableGuides() {
-            const guidesNames = this.theme.guides.map(guide => guide.name);
-            const newAvailableGuides = this.allGuides.filter(guide => !guidesNames.includes(guide.name));
-            console.log(typeof guidesNames);
-            this.updateGuidesList(newAvailableGuides)
+            this.availableGuides = [];
+            const guidesUrl = this.topic.guides.map(guide => guide.url);
+            const newAvailableGuides = this.allGuides.filter(guide => !guidesUrl.includes(guide.url));
+            newAvailableGuides.forEach(guide => {
+                this.availableGuides.push(guide);
+            })
         },
         async createTopic() {
             const valid = await this.v$.$validate();
-            console.log(valid);
             if (valid) {
-                const headers = { 'Authorization': `Bearer ${this.usersStore.token}` }
-                const resp = await this.$http.post('/topics', this.theme, { headers: headers });
+                const headers = { 'Authorization': `Bearer ${this.token}` }
+                const resp = await this.$http.post('/topics', this.topic, { headers: headers });
                 if (resp.status == 204 || resp.status == 200) {
-                    this.$toast.success("toast-app", `Le guide ${this.theme.name} a bien été créé`);
+                    this.$toast.success("toast-app", `Le guide ${this.topic.name} a bien été créé`);
                     this.$router.push({ name: 'themes' });
                 } else {
                     console.error(resp);
@@ -129,11 +126,11 @@ export default {
             }
         },
         async initGuides() {
-            const headers = { 'Authorization': `Bearer ${this.usersStore.token}` }
+            const headers = { 'Authorization': `Bearer ${this.token}` }
             const resp = await this.$http.get('/guides', { headers: headers });
             if (resp.status === 204 || resp.status === 200) {
                 this.allGuides = resp.body;
-                this.updateGuidesList(resp.body);
+                this.availableGuides = resp.body;
             } else {
                 console.error(resp);
             }

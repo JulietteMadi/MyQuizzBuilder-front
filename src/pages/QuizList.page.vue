@@ -12,11 +12,13 @@
                 </button>
             </RouterLink>
         </div>
+        <div class="col-12 p-2 mt-5 input-group">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" class="form-control" id="searchQuiz" placeholder="Rechercher un quiz" v-model="searchQuiz">
+        </div>
     </div>
-    <div class="col-12 p-2 mt-2 input-group">
-        <span class="input-group-text"><i class="bi bi-search"></i></span>
-        <input type="text" class="form-control" id="searchQuiz" placeholder="Rechercher un quiz" v-model="searchQuiz">
-    </div>
+
+    <!-- QuizList -->
     <div class="row my-5 mx-auto text-center">
         <div class=" col-12 col-sm-6 col-md-4 col-lg-3 py-3" v-for="(quiz, index) in filteredQuiz">
             <QuizItem :quizName="quiz.name" :index="index.toString()" />

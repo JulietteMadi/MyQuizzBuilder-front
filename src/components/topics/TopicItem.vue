@@ -40,8 +40,6 @@
     </div>
 </template>
 <script>
-import { useUserStore } from '../../stores/userStore';
-import { mapStores } from 'pinia';
 
 export default {
     props: {
@@ -53,10 +51,6 @@ export default {
             type: String,
             default: null
         }
-    },
-
-    computed: {
-        ...mapStores(useUserStore),
     },
 
     methods: {

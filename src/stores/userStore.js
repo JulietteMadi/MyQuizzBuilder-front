@@ -3,12 +3,14 @@ import { defineStore } from 'pinia';
 export const useUserStore = defineStore('users', {
     state: () => {
         return {
-            token: ''
+            token: '',
+            userName: '',
+            userEmail: ''
         }
     },
 
     actions: {
-        reset() {
+        resetUser() {
             this.token = ''
         }
     }

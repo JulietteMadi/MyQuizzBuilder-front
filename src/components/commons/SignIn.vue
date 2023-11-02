@@ -19,7 +19,7 @@
 
 <script>
 import { useUserStore } from '../../stores/userStore';
-import { mapStores } from 'pinia';
+import { mapWritableState } from 'pinia';
 
 export default {
     data() {
@@ -34,7 +34,7 @@ export default {
     },
 
     computed: {
-        ...mapStores(useUserStore)
+        ...mapWritableState(useUserStore, ["token", "userEmail", "userName"]),
     },
 
     methods: {
@@ -45,11 +45,12 @@ export default {
             }
             const resp = await this.$http.post('/sign-in', body);
             if (resp.status == 204 || resp.status == 200) {
-                this.token = await resp.body.token;
-                this.usersStore.token = this.token;
-                console.log(resp.body);
+                const body = await resp.body;
+                this.token = body.token;
+                this.userName = body.userName;
+                this.userEmail = body.userEmail;
                 this.$router.push({ name: 'home' });
-                this.$toast.success("toast-app", 'Vous êtes bien connecté')
+                this.$toast.success("toast-app", `Vous êtes bien connecté en tant que ${body.userName}`)
             } else {
                 console.error(resp);
                 this.$toast.error("toast-app", 'Les informations ne sont pas valides');

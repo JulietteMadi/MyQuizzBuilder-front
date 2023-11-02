@@ -1,4 +1,23 @@
 <template>
+    <!-- Warning update modal -->
+    <div class="modal fade" id="warningModalGuide" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5 text-danger" id="labelModal">Attention</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    Si vous change le nom ou l'image de <b>{{ guide.name }}</b>, ces changements seront effectifs dans tous
+                    les
+                    autres thèmes qui incluent cette fiche pratique.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">J'ai compris</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Toggle buttons to chose to create a new guide or use an old one -->
     <div class="btn-group col-12" role="group">
         <input type="radio" class="btn-check" :name="`guideOption${index}`" :id="`guideOption${index}1`" autocomplete="off"
@@ -18,7 +37,24 @@
                 {{ guide.name }}
             </option>
         </select>
-        <input v-else :id="`guideName${index}`" v-model="guide.name" class="form-control" disabled>
+        <div v-else class="input-group">
+            <input :id="`guideName${index}`" v-model="guide.name" class="form-control" :disabled="!updateGuide">
+            <button class="btn primary-button" type="button">
+                <i v-if="updateGuide" class="bi bi-save " style="color: white;"
+                    @click="disableTooltip('saveGuide' + index), updateGuide = false, $emit('updateGuidesList')"
+                    :id="'saveGuide' + index" data-bs-toggle="tooltip" data-bs-custom-class="bg-tooltip"
+                    data-bs-original-title="Enregistrer cette fiche pratique"
+                    @mouseover="enableTooltip(`saveGuide${index}`)"></i>
+                <span v-else data-bs-toggle="modal" data-bs-target="#warningModalGuide">
+                    <i class="bi bi-pencil-square " style="color: white;"
+                        @click="disableTooltip('updateGuide' + index), updateGuide = true, setUpdateGuide()"
+                        :id="'updateGuide' + index" data-bs-toggle="tooltip" data-bs-custom-class="bg-tooltip"
+                        data-bs-original-title="Modifier cette fiche pratique"
+                        @mouseover="enableTooltip(`updateGuide${index}`)"></i>
+                </span>
+
+            </button>
+        </div>
         <div class="container">
             <div class="row">
                 <div class="col-12 col-md-8 px-0 pe-md-3">
@@ -28,7 +64,8 @@
                 </div>
                 <div class="col-12 col-md-4 px-0">
                     <label :for="`guideImage${index}`">Lien vers l'image d'illustration</label>
-                    <input class="form-control" type="text" :id="`guideImage${index}`" v-model="guide.image" disabled>
+                    <input class="form-control" type="text" :id="`guideImage${index}`" v-model="guide.image"
+                        :disabled="!updateGuide">
                 </div>
             </div>
         </div>
@@ -53,7 +90,11 @@
             </div>
         </div>
     </div>
-    <div class="col-12 col-md-1 align-self-center d-flex justify-content-center">
+    <div class="col-12 col-md-1 d-flex align-items-center justify-content-center flex-column">
+        <i v-if="oldGuide" class="bi bi-arrow-left-right primary clickable-icon"
+            style="font-size: 1.5rem; color: var(--second-dark-color);" @click="resetGuide()" :id="'change' + index"
+            data-bs-toggle="tooltip" data-bs-custom-class="bg-tooltip"
+            data-bs-original-title="Choisir une autre fiche pratique" @mouseover="enableTooltip(`change${index}`)"></i>
         <i class="bi bi-trash3-fill primary clickable-icon" style="font-size: 1.5rem; color: var(--second-dark-color);"
             @click="$emit('deleteGuide', index)" :id="'delete' + index" data-bs-toggle="tooltip"
             data-bs-custom-class="bg-tooltip" data-bs-original-title="Retirer cette fiche pratique"
@@ -61,9 +102,6 @@
     </div>
 </template>
 <script>
-import { useUserStore } from '../../stores/userStore';
-import { useTopicStore } from '../../stores/topicStore';
-import { mapStores, mapState } from 'pinia';
 import { useVuelidate } from '@vuelidate/core';
 import { required, maxLength, minLength } from '@vuelidate/validators';
 
@@ -78,7 +116,7 @@ export default {
         return {
             chosenGuideName: "",
             oldGuide: true,
-            validGuidesList: true,
+            updateGuide: false
         }
     },
 
@@ -99,12 +137,11 @@ export default {
         guide: {
             type: Object,
             default: null
+        },
+        availableGuides: {
+            type: Array,
+            default: null
         }
-    },
-
-    computed: {
-        ...mapStores(useUserStore),
-        ...mapState(useTopicStore, ["availableGuides"])
     },
 
     methods: {
@@ -133,7 +170,19 @@ export default {
             this.guide.url = "";
             this.guide.name = "";
             this.guide.image = "";
+            this.guide.noUpdate = true;
+            this.chosenGuideName = "";
+            this.updateGuide = false;
+            this.$emit('updateGuidesList');
         },
+        disableTooltip(id) {
+            const element = document.getElementById(id);
+            const tooltip = bootstrap.Tooltip.getOrCreateInstance(element);
+            tooltip.dispose();
+        },
+        setUpdateGuide() {
+            this.guide.noUpdate = false;
+        }
     }
 
 }

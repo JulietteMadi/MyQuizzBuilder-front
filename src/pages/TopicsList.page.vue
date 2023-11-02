@@ -33,7 +33,7 @@
                 </button>
             </RouterLink>
         </div>
-        <div class="col-12 p-2 mt-2 input-group">
+        <div class="col-12 p-2 mt-5 input-group">
             <span class="input-group-text"><i class="bi bi-search"></i></span>
             <input type="text" class="form-control" id="searchTopic" placeholder="Rechercher un thème"
                 v-model="searchTopic">
@@ -52,7 +52,7 @@
 import { RouterLink } from 'vue-router';
 import TopicItem from '../components/topics/TopicItem.vue'
 import { useUserStore } from '../stores/userStore';
-import { mapStores } from 'pinia';
+import { mapState } from 'pinia';
 
 export default {
     data() {
@@ -87,7 +87,7 @@ export default {
     },
 
     computed: {
-        ...mapStores(useUserStore),
+        ...mapState(useUserStore, ["token"]),
 
         filteredTopics() {
             const search = this.searchTopic.toLowerCase();
@@ -113,7 +113,7 @@ export default {
             this.$router.push({ name: 'modifierTheme', params: { id: id } })
         },
         async getAllTopics() {
-            const headers = { 'Authorization': `Bearer ${this.usersStore.token}` }
+            const headers = { 'Authorization': `Bearer ${this.token}` }
             const resp = await this.$http.get('/topics', { headers: headers });
             if (resp.status == 200 || resp.status == 204) {
                 this.allTopics = resp.body;
@@ -122,7 +122,7 @@ export default {
             }
         },
         async deleteTopic(id) {
-            const headers = { 'Authorization': `Bearer ${this.usersStore.token}` }
+            const headers = { 'Authorization': `Bearer ${this.token}` }
             const resp = await this.$http.delete(`/topics/${id}`, { headers: headers });
             if (resp.status === 204 || resp.status === 200) {
                 await this.getAllTopics();

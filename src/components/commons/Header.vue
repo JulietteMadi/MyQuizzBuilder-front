@@ -13,22 +13,23 @@
                 </div>
 
                 <!-- header when authenticated -->
-                <div v-if="usersStore.token || usersStore.token !== ''"
-                    class="collapse navbar-collapse md-d-flex justify-content-end" id="navbarNavAltMarkup">
+                <div v-if="token || token !== ''" class="collapse navbar-collapse md-d-flex justify-content-end"
+                    id="navbarNavAltMarkup">
                     <div class="navbar-nav">
                         <RouterLink class="nav-link" to="/">Accueil</RouterLink>
                         <RouterLink class="nav-link" to="/quiz">Quiz</RouterLink>
                         <RouterLink class="nav-link" to="/themes">Thèmes</RouterLink>
-                        <div class="btn-group">
+
+                        <div class="dropdown-center">
                             <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">
                                 <i class="bi bi-person-circle"></i>
                             </a>
-                            <ul class="dropdown-menu">
+                            <ul class="dropdown-menu dropdown-menu-end">
                                 <li>
-                                    <button class="dropdown-item" @click="disconnect">Se déconnecter</button>
+                                    <RouterLink class="dropdown-item disabled" to="#">Mon espace personnel</RouterLink>
                                 </li>
                                 <li>
-                                    <RouterLink class="dropdown-item" to="#">Another action</RouterLink>
+                                    <button class="dropdown-item" @click="disconnect">Se déconnecter</button>
                                 </li>
                             </ul>
                         </div>
@@ -50,18 +51,18 @@
 <script>
 import { RouterLink } from 'vue-router';
 import { useUserStore } from '../../stores/userStore';
-import { mapActions, mapStores } from 'pinia';
+import { mapActions, mapState } from 'pinia';
 
 export default {
 
     computed: {
-        ...mapStores(useUserStore),
-        ...mapActions(useUserStore, ['reset'])
+        ...mapState(useUserStore, ["token"])
     },
 
     methods: {
+        ...mapActions(useUserStore, ['reset']),
         disconnect() {
-            this.usersStore.reset();
+            this.reset();
             this.$router.push({ name: 'signIn' });
         }
     }
