@@ -69,6 +69,11 @@ p {
     padding: 5px 10px;
 }
 
+.secundary-button:disabled {
+    background-color: #54626F;
+    color: white;
+}
+
 .primary-button:hover {
     background-color: var(--second-blue-color);
     color: white;

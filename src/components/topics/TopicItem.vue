@@ -9,7 +9,7 @@
             <div class="col d-flex justify-content-center p-0">
                 <button class="btn primary-button mt-2" :id="'modifyTopic' + topic.id" data-bs-custom-class="bg-tooltip"
                     data-bs-original-title="Modifier"
-                    @click="$emit('updateTopic', topic.id), disableTooltip(`modifyTopic${topic.id}`)">
+                    @click="$emit('updateTopic', topic.id, topic.name), disableTooltip(`modifyTopic${topic.id}`)">
                     <i class="bi bi-pencil-square" data-bs-toggle="tooltip"
                         @mouseover="enableTooltip(`modifyTopic${topic.id}`)"></i>
                 </button>

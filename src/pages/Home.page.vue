@@ -41,7 +41,7 @@
                     Ce projet est une simple démonstration. C'est pourquoi, vos interactions avec l'interface n'auront pas
                     d'effets sur celle-ci : vous pouvez créer un quiz en entier, mais en revenant sur la liste des quiz
                     vous ne le retrouverez pas. <br>
-                    Je compte sur vous pour me remonter des suggesions, améliorations ou bugs !
+                    Je compte sur vous pour me remonter des suggestions ou améliorations !
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">J'ai compris</button>
@@ -67,7 +67,6 @@
                 </div>
             </div>
         </section>
-
         <!-- My favourite quiz -->
         <h2>Mes derniers quiz</h2>
         <div class="text-center">
@@ -129,6 +128,7 @@ export default {
                     { id: 4, name: "Inclusion managériale" }
                 ],
                 disclaimer: true,
+                topicToDelete: {}
             }
         } else {
             return {
@@ -150,7 +150,7 @@ export default {
     },
 
     mounted() {
-        this.getAllTopics();
+        if (import.meta.env.MODE !== "demo") this.getAllTopics();
     },
 
     computed: {
@@ -165,8 +165,8 @@ export default {
         askDeleteTopic(index) {
             this.topicToDelete = this.lastTopics.find(topic => topic.id === index);
         },
-        updateTopic(id) {
-            this.$router.push({ name: 'modifierTheme', params: { id: id } })
+        updateTopic(id, name) {
+            this.$router.push({ name: 'modifierTheme', params: { id: id, name: name } })
         },
 
         async getAllTopics() {
@@ -180,14 +180,20 @@ export default {
             }
         },
         async deleteTopic(id) {
-            const headers = { 'Authorization': `Bearer ${this.token}` }
-            const resp = await this.$http.delete(`/topics/${id}`, { headers: headers });
-            if (resp.status === 204 || resp.status === 200) {
-                await this.getAllTopics();
-                this.$toast.success("toast-app", `Le thème ${this.topicToDelete.name} a bien été supprimé`)
+            if (import.meta.env.MODE !== "demo") {
+                const headers = { 'Authorization': `Bearer ${this.token}` }
+                const resp = await this.$http.delete(`/topics/${id}`, { headers: headers });
+                if (resp.status === 204 || resp.status === 200) {
+                    await this.getAllTopics();
+                    this.$toast.success("toast-app", `Le thème ${this.topicToDelete.name} a bien été supprimé`)
+                } else {
+                    console.error(error)
+                    this.$toast.error("toast-app", `Un problème est survenu à la suppression du thème ${this.topicToDelete.name}`)
+                }
             } else {
-                console.error(error)
-                this.$toast.error("toast-app", `Un problème est survenu à la suppression du thème ${this.topicToDelete.name}`)
+                const indexToDelete = this.lastTopics.findIndex(topic => topic.id === id);
+                this.lastTopics.splice(indexToDelete, 1);
+                this.$toast.success("toast-app", `Le thème ${this.topicToDelete.name} a bien été supprimé`);
             }
         }
     }

@@ -14,11 +14,10 @@
                         du quizz verront !</p>
                 </div>
             </div>
-            {{ topic }}
             <!-- List of guides -->
             <div class="row py-3 my-5 d-flex" v-for="(guide, index) in topic.guides" :key="index">
-                <GuideItem :index="index" :guide="guide" :availableGuides="availableGuides" @deleteGuide="deleteGuide"
-                    @updateGuidesList="updateAvailableGuides" />
+                <GuideItem :index="index" :guide="guide" :availableGuides="availableGuides" :allGuides="allGuides"
+                    @deleteGuide="deleteGuide" @updateGuidesList="updateAvailableGuides" />
             </div>
 
             <!-- Add a guide -->
@@ -55,12 +54,38 @@ export default {
     },
 
     data() {
-        return {
-            id: this.route.params.id,
-            topic: {},
-            allGuides: [],
-            availableGuides: []
+        if (import.meta.env.MODE === "demo") {
+            return {
+                id: this.route.params.id,
+                topic: {
+                    name: this.route.params.name,
+                    guides: [
+                        { name: "Savoir quand former un collaborateur", url: "www.majrh.fr/savoir-quand-former", image: "www.temp.fr" },
+                        { name: "Discriminations : les biais en recrutement", url: "www.majrh.fr/discrimination-biais-recrutement", image: "www.temp.fr" }
+                    ]
+                },
+                allGuides: [
+                    { name: "Former les cadres supérieurs", url: "www.majrh.fr/former-cadres-superieurs", image: "www.temp.fr" },
+                    { name: "Savoir quand former un collaborateur", url: "www.majrh.fr/savoir-quand-former", image: "www.temp.fr" },
+                    { name: "Discriminations : les biais en recrutement", url: "www.majrh.fr/discrimination-biais-recrutement", image: "www.temp.fr" },
+                    { name: "Onboarding en 5 étapes", url: "www.majrh.fr/onboarding-5-etapes", image: "www.temp.fr" }
+                ],
+                availableGuides: [
+                    { name: "Former les cadres supérieurs", url: "www.majrh.fr/former-cadres-superieurs", image: "www.temp.fr" },
+                    { name: "Savoir quand former un collaborateur", url: "www.majrh.fr/savoir-quand-former", image: "www.temp.fr" },
+                    { name: "Discriminations : les biais en recrutement", url: "www.majrh.fr/discrimination-biais-recrutement", image: "www.temp.fr" },
+                    { name: "Onboarding en 5 étapes", url: "www.majrh.fr/onboarding-5-etapes", image: "www.temp.fr" }
+                ]
+            }
+        } else {
+            return {
+                id: this.route.params.id,
+                topic: {},
+                allGuides: [],
+                availableGuides: []
+            }
         }
+
     },
 
     validations() {
@@ -84,7 +109,7 @@ export default {
     },
 
     created() {
-        this.initGuides();
+        if (import.meta.env.MODE !== "demo") this.initGuides();
     },
 
     methods: {
@@ -107,14 +132,17 @@ export default {
         },
         guidesFormat() {
             this.topic.guides.forEach(guide => {
+                if (!guide.id) {
+                    const tmp = this.allGuides.filter(el => guide.url === el.url);
+                    guide.id = tmp[0].id;
+                };
                 if (guide.noUpdate) {
                     delete guide.name;
                     delete guide.url;
                     delete guide.image;
-                }
+                };
                 delete guide.noUpdate;
             })
-            console.log(this.topic);
         },
         async initTopic() {
             const headers = { 'Authorization': `Bearer ${this.token}` };
@@ -148,15 +176,20 @@ export default {
         async updateTopic() {
             const valid = await this.v$.$validate();
             if (valid) {
-                this.guidesFormat();
-                /* const headers = { 'Authorization': `Bearer ${this.token}` }
-                const resp = await this.$http.put(`/topics/${this.id}`, this.topic, { headers: headers });
-                if (resp.status === 204 || resp.status === 200) {
+                if (import.meta.env.MODE !== "demo") {
+                    this.guidesFormat();
+                    const headers = { 'Authorization': `Bearer ${this.token}` }
+                    const resp = await this.$http.put(`/topics/${this.id}`, this.topic, { headers: headers });
+                    if (resp.status === 204 || resp.status === 200) {
+                        this.$toast.success("toast-app", `Le guide ${this.topic.name} a bien été modifié`);
+                        this.$router.push({ name: 'themes' });
+                    } else {
+                        this.$toast.error("toast-app", "Les informations de votre thème ne sont pas valides");
+                    }
+                } else {
                     this.$toast.success("toast-app", `Le guide ${this.topic.name} a bien été modifié`);
                     this.$router.push({ name: 'themes' });
-                } else {
-                    this.$toast.error("toast-app", "Les informations de votre thème ne sont pas valides");
-                } */
+                }
             } else {
                 this.$toast.error("toast-app", "Les informations de votre thème ne sont pas valides");
             }

@@ -39,7 +39,6 @@
                 v-model="searchTopic">
         </div>
     </div>
-
     <!-- TopicList -->
     <div class="row my-5 mx-auto text-center">
         <div class=" col-12 col-sm-6 col-md-4 col-lg-3 py-3" v-for="(topic, index) in filteredTopics">
@@ -70,6 +69,7 @@ export default {
                     { id: 9, name: "Sélectionner les CV" }
                 ],
                 searchTopic: "",
+                topicToDelete: {}
             };
         } else {
             return {
@@ -103,14 +103,15 @@ export default {
     },
 
     mounted() {
-        this.getAllTopics();
+        if (import.meta.env.MODE !== "demo") this.getAllTopics();
+
     },
     methods: {
         askDeleteTopic(index) {
             this.topicToDelete = this.allTopics.find(topic => topic.id === index);
         },
-        updateTopic(id) {
-            this.$router.push({ name: 'modifierTheme', params: { id: id } })
+        updateTopic(id, name) {
+            this.$router.push({ name: 'modifierTheme', params: { id: id, name: name } })
         },
         async getAllTopics() {
             const headers = { 'Authorization': `Bearer ${this.token}` }
@@ -122,15 +123,22 @@ export default {
             }
         },
         async deleteTopic(id) {
-            const headers = { 'Authorization': `Bearer ${this.token}` }
-            const resp = await this.$http.delete(`/topics/${id}`, { headers: headers });
-            if (resp.status === 204 || resp.status === 200) {
-                await this.getAllTopics();
-                this.$toast.success("toast-app", `Le thème ${this.topicToDelete.name} a bien été supprimé`)
+            if (import.meta.env.MODE !== "demo") {
+                const headers = { 'Authorization': `Bearer ${this.token}` }
+                const resp = await this.$http.delete(`/topics/${id}`, { headers: headers });
+                if (resp.status === 204 || resp.status === 200) {
+                    await this.getAllTopics();
+                    this.$toast.success("toast-app", `Le thème ${this.topicToDelete.name} a bien été supprimé`);
+                } else {
+                    console.error(error)
+                    this.$toast.error("toast-app", `Un problème est survenu à la suppression du thème ${this.topicToDelete.name}`);
+                }
             } else {
-                console.error(error)
-                this.$toast.error("toast-app", `Un problème est survenu à la suppression du thème ${this.topicToDelete.name}`)
+                const indexToDelete = this.allTopics.findIndex(topic => topic.id === id);
+                this.allTopics.splice(indexToDelete, 1);
+                this.$toast.success("toast-app", `Le thème ${this.topicToDelete.name} a bien été supprimé`)
             }
+
         }
     }
 }

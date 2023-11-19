@@ -1,6 +1,6 @@
 <template>
     <!-- Warning update modal -->
-    <div class="modal fade" id="warningModalGuide" tabindex="-1">
+    <div class="modal fade" :id="'warningModalGuide' + index" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -45,7 +45,7 @@
                     :id="'saveGuide' + index" data-bs-toggle="tooltip" data-bs-custom-class="bg-tooltip"
                     data-bs-original-title="Enregistrer cette fiche pratique"
                     @mouseover="enableTooltip(`saveGuide${index}`)"></i>
-                <span v-else data-bs-toggle="modal" data-bs-target="#warningModalGuide">
+                <span v-else data-bs-toggle="modal" :data-bs-target="'#warningModalGuide' + index">
                     <i class="bi bi-pencil-square " style="color: white;"
                         @click="disableTooltip('updateGuide' + index), updateGuide = true, setUpdateGuide()"
                         :id="'updateGuide' + index" data-bs-toggle="tooltip" data-bs-custom-class="bg-tooltip"
@@ -76,12 +76,16 @@
         <label :for="`guideName${index}`" class="fs-6">Nom de la fiche</label>
         <input :name="`guideName${index}`" :id="`guideName${index}`" v-model="guide.name" type="text" maxlength="100"
             class="form-control mb-2" :class="{ 'is-invalid': v$.guide.name.$error }">
+        <p v-if="v$.guide.name.$error" class="text-danger">Ce champs est obligatoire et doit contenir entre 3 et 100
+            caractères</p>
         <div class="container">
             <div class="row">
                 <div class="col-12 col-md-8 px-0 pe-md-3">
                     <label :for="`guideUrl${index}`">Lien vers la fiche</label>
                     <input :name="`guideUrl${index}`" :id="`guideUrl${index}`" v-model="guide.url" type="text"
                         maxlength="255" class="form-control" :class="{ 'is-invalid': v$.guide.url.$error }">
+                    <p v-if="v$.guide.url.$error" class="text-danger">L'url est obligatoire et doit corresondre au site
+                        majrh.fr</p>
                 </div>
                 <div class="col-12 col-md-4 px-0">
                     <label :for="`guideImage${index}`">Lien vers l'image d'illustration</label>
@@ -103,7 +107,9 @@
 </template>
 <script>
 import { useVuelidate } from '@vuelidate/core';
-import { required, maxLength, minLength } from '@vuelidate/validators';
+import { required, minLength, maxLength } from '@vuelidate/validators';
+
+const urlValidator = (value) => value.includes('majrh.fr')
 
 export default {
     setup() {
@@ -123,8 +129,17 @@ export default {
     validations() {
         return {
             guide: {
-                name: { required, maxLength: maxLength(100), minLength: minLength(3) },
-                url: { required, maxLength: maxLength(255) }
+                name: {
+                    required: required,
+                    minLength: minLength(5),
+                    maxLength: maxLength(100)
+                },
+                url: {
+                    required: required,
+                    minLength: minLength(5),
+                    maxLength: maxLength(100),
+                    urlValidator: urlValidator
+                }
             },
         }
     },
@@ -140,6 +155,10 @@ export default {
         },
         availableGuides: {
             type: Array,
+            default: null
+        },
+        allGuides: {
+            type: Object,
             default: null
         }
     },

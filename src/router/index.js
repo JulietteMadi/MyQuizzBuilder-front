@@ -35,7 +35,7 @@ const router = createRouter({
             component: () => import('../pages/TopicCreate.page.vue')
         },
         {
-            path: '/theme/modifier/:id',
+            path: '/theme/modifier/:id/:name',
             name: 'modifierTheme',
             component: () => import('../pages/TopicUpdate.page.vue')
         },
