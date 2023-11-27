@@ -68,12 +68,12 @@ export default {
 
     methods: {
         checkDemo() {
-            if (this.inputs.identifier === "toto@mqb.fr" && this.inputs.password === "letmein") {
-                this.token = "toto";
-                this.userName = "Toto";
-                this.userEmail = "toto@mqb.fr";
+            if (this.inputs.identifier === "admin@mqb.fr" && this.inputs.password === "letmein") {
+                this.token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjb3Vjb3UiLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwODAiLCJleHAiOjE3MDEwMTg4NzAsImlhdCI6MTcwMDkzMjQ3MH0.Q9TqG_B1Dl9G6xRfdliVViOgxuodinr6Tj1wrWZwjhQ";
+                this.userName = "Admin";
+                this.userEmail = "admin@mqb.fr";
                 this.$router.push({ name: 'home' });
-                this.$toast.success("toast-app", `Vous êtes bien connecté en tant que Toto`)
+                this.$toast.success("toast-app", `Vous êtes bien connecté en tant que Admin`)
             } else {
                 this.wrongIdentifier = true
             }

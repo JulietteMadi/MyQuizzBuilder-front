@@ -57,8 +57,8 @@
     </form>
 
     <!-- Register new quiz button-->
-    <div class="align-items-end flex-column row mb-5">
-        <button class="btn btn-primary mt-2 col-12 col-md-3" type="submit" @click="createQuiz">
+    <div class="align-items-end flex-column px-2 row mb-5">
+        <button class="btn primary-button mt-2 col-12 col-md-3" type="submit" @click="createQuiz">
             <i class="bi bi-plus-circle me-3"></i>
             Créer un quiz
         </button>

@@ -6,7 +6,8 @@
                 <div class="col-12">
                     <label for="name" class="fs-5">Nom du thème</label>
                     <input name="name" id="name" type="text" class="form-control" placeholder="Ex : recrutement"
-                        v-model="topic.name">
+                        v-model="topic.name" :class="{ 'is-invalid': v$.topic.name.$error }">
+                    <p v-if="v$.topic.name.$error" class="text-danger">{{ v$.topic.name.$errors[0].$message }}</p>
                 </div>
                 <div class="cols-12 my-4">
                     <p>Veuillez ajouter entre 5 et 50 fiches pratiques associées à ce thème.<br>
@@ -15,6 +16,7 @@
                 </div>
             </div>
             <!-- List of guides -->
+            <p v-if="v$.topic.guides.$error" class="text-danger">{{ v$.topic.guides.$errors[0].$message }}</p>
             <div class="row py-3 my-5 d-flex" v-for="(guide, index) in topic.guides" :key="index">
                 <GuideItem :index="index" :guide="guide" :availableGuides="availableGuides" :allGuides="allGuides"
                     @deleteGuide="deleteGuide" @updateGuidesList="updateAvailableGuides" />
@@ -26,7 +28,7 @@
                 Ajouter une fiche
             </button>
         </div>
-        <div class="align-items-end flex-column row">
+        <div class="align-items-end flex-column px-2 row">
             <button class="btn primary-button mt-2 col-12 col-md-3" type="submit" :disabled="invalidForm">
                 <i class="bi bi-plus-circle"></i>
                 Créer un thème
@@ -39,7 +41,7 @@
 <script>
 import GuideItem from '../components/topics/GuideItem.vue';
 import { useVuelidate } from '@vuelidate/core';
-import { required, maxLength, minLength } from '@vuelidate/validators';
+import { required, maxLength, minLength, helpers } from '@vuelidate/validators';
 import { useUserStore } from '../stores/userStore';
 import { mapState } from 'pinia';
 
@@ -85,8 +87,15 @@ export default {
     validations() {
         return {
             topic: {
-                name: { required, maxLength: maxLength(100) },
-                guides: { required, maxLength: maxLength(50) }
+                name: {
+                    required: helpers.withMessage('Veuillez renseigner un nom pour ce thème', required),
+                    maxLength: helpers.withMessage('Le nom du thème ne peut âs dépasser 100 caractères', maxLength(100))
+                },
+                guides: {
+                    required: helpers.withMessage('Veuillez ajouter des fiches pratiques à ce thème', required),
+                    maxLength: helpers.withMessage('Ce thème ne peut pas contenir plus de 50 fiches pratiques', maxLength(50)),
+                    minLength: helpers.withMessage('Ce thème doit contenir au moins 5 fiches pratiques', minLength(3))
+                }
             }
         }
     },
@@ -99,7 +108,7 @@ export default {
     computed: {
         ...mapState(useUserStore, ["token"]),
         invalidForm() {
-            return this.topic.guides < 4 || !this.topic.name;
+            return this.topic.guides.length < 5 || !this.topic.name;
         },
     },
 
@@ -132,24 +141,19 @@ export default {
         },
         guidesFormat() {
             this.topic.guides.forEach(guide => {
-                if (!guide.id) {
-                    const tmp = this.allGuides.filter(el => guide.url === el.url);
-                    guide.id = tmp[0].id;
-                };
-                if (guide.noUpdate) {
-                    delete guide.name;
+                if (guide.id) {
                     delete guide.url;
-                    delete guide.image;
                 }
+                if (guide.id && guide.noUpdate) {
+                    delete guide.name;
+                    delete guide.image;
+                } 
                 delete guide.noUpdate;
             })
         },
         async createTopic() {
             const valid = await this.v$.$validate();
             if (valid) {
-
-                //For topic creation in DB
-                if (import.meta.env.MODE !== "demo") {
                     this.guidesFormat();
                     const headers = { 'Authorization': `Bearer ${this.token}` }
                     const resp = await this.$http.post('/topics', this.topic, { headers: headers });
@@ -160,12 +164,7 @@ export default {
                         console.error(resp);
                         this.$toast.error("toast-app", "Un problème est survenu à la création de ce thème");
                     }
-
-                    // For topic creation in demo env
-                } else {
-                    this.$toast.success("toast-app", `Le guide ${this.topic.name} a bien été créé`);
-                    this.$router.push({ name: 'themes' });
-                }
+                
             } else {
                 this.$toast.error("toast-app", "Les informations de votre thème ne sont pas valides");
             }

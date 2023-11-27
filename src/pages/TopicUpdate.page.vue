@@ -7,6 +7,7 @@
                     <label for="name" class="fs-5">Nom du thème</label>
                     <input name="name" id="name" type="text" class="form-control" placeholder="Ex : recrutement"
                         v-model="topic.name" :class="{ 'is-invalid': v$.topic.name.$error }">
+                    <p v-if="v$.topic.name.$error" class="text-danger">{{ v$.topic.name.$errors[0].$message }}</p>
                 </div>
                 <div class="cols-12 my-4">
                     <p>Veuillez ajouter entre 5 et 50 fiches pratiques associées à ce thème.<br>
@@ -15,6 +16,7 @@
                 </div>
             </div>
             <!-- List of guides -->
+            <p v-if="v$.topic.guides.$error" class="text-danger">{{ v$.topic.guides.$errors[0].message }}</p>
             <div class="row py-3 my-5 d-flex" v-for="(guide, index) in topic.guides" :key="index">
                 <GuideItem :index="index" :guide="guide" :availableGuides="availableGuides" :allGuides="allGuides"
                     @deleteGuide="deleteGuide" @updateGuidesList="updateAvailableGuides" />
@@ -26,7 +28,7 @@
                 Ajouter une fiche
             </button>
         </div>
-        <div class="align-items-end flex-column row">
+        <div class="align-items-end flex-column ropx-2">
             <button class="btn primary-button mt-2 col-12 col-md-3" type="submit">
                 <i class="bi bi-pencil-square"></i>
                 Modifier le thème
@@ -40,7 +42,7 @@
 import { useRoute } from 'vue-router'
 import GuideItem from '../components/topics/GuideItem.vue';
 import { useVuelidate } from '@vuelidate/core';
-import { required, maxLength, minLength } from '@vuelidate/validators';
+import { required, maxLength, minLength, helpers } from '@vuelidate/validators';
 import { mapState, mapActions } from 'pinia';
 import { useUserStore } from '../stores/userStore';
 
@@ -91,8 +93,15 @@ export default {
     validations() {
         return {
             topic: {
-                name: { required, maxLength: maxLength(100) },
-                guides: { required, maxLength: maxLength(50), minLength: minLength(5) }
+                name: {
+                    required: helpers.withMessage('Veuillez renseigner un nom pour ce thème', required),
+                    maxLength: helpers.withMessage('Le nom du thème ne peut âs dépasser 100 caractères', maxLength(100))
+                },
+                guides: {
+                    required: helpers.withMessage('Veuillez ajouter des fiches pratiques à ce thème', required),
+                    maxLength: helpers.withMessage('Ce thème ne peut pas contenir plus de 50 fiches pratiques', maxLength(50)),
+                    minLength: helpers.withMessage('Ce thème doit contenir au moins 5 fiches pratiques', minLength(5))
+                }
             }
         }
     },
@@ -132,15 +141,13 @@ export default {
         },
         guidesFormat() {
             this.topic.guides.forEach(guide => {
-                if (!guide.id) {
-                    const tmp = this.allGuides.filter(el => guide.url === el.url);
-                    guide.id = tmp[0].id;
-                };
-                if (guide.noUpdate) {
-                    delete guide.name;
+                if (guide.id) {
                     delete guide.url;
+                }
+                if (guide.id && guide.noUpdate) {
+                    delete guide.name;
                     delete guide.image;
-                };
+                } 
                 delete guide.noUpdate;
             })
         },
@@ -175,6 +182,7 @@ export default {
 
         async updateTopic() {
             const valid = await this.v$.$validate();
+            console.log(valid)
             if (valid) {
                 if (import.meta.env.MODE !== "demo") {
                     this.guidesFormat();

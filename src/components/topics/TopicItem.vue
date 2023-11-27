@@ -7,33 +7,53 @@
         </div>
         <div class="p-3 row">
             <div class="col d-flex justify-content-center p-0">
-                <button class="btn primary-button mt-2" :id="'modifyTopic' + topic.id" data-bs-custom-class="bg-tooltip"
+                <button :id="'modifyTopic' + topic.id" 
+                    @click="$emit('updateTopic', topic.id, topic.name), disableTooltip(`modifyTopic${topic.id}`)"
+                    class="btn primary-button mt-2"  
+                    @mouseover="enableTooltip(`modifyTopic${topic.id}`)" 
+                    data-bs-custom-class="bg-tooltip"
                     data-bs-original-title="Modifier"
-                    @click="$emit('updateTopic', topic.id, topic.name), disableTooltip(`modifyTopic${topic.id}`)">
-                    <i class="bi bi-pencil-square" data-bs-toggle="tooltip"
-                        @mouseover="enableTooltip(`modifyTopic${topic.id}`)"></i>
+                    data-bs-toggle="tooltip"
+                >
+                    <i class="bi bi-pencil-square"></i>
                 </button>
             </div>
             <div class="col d-flex justify-content-center p-0">
-                <button class="btn primary-button mt-2" :id="'cancelTopic' + topic.id" data-bs-custom-class="bg-tooltip"
-                    data-bs-original-title="Supprimer" data-bs-toggle="modal" data-bs-target="#warningModalTopic"
-                    @click="$emit('deleteTopic', topic.id)">
-                    <i class="bi bi-trash3-fill" data-bs-toggle="tooltip"
-                        @mouseover="enableTooltip(`cancelTopic${topic.id}`)"></i>
+                <button :id="'cancelTopic' + topic.id" 
+                    @click="$emit('deleteTopic', topic.id)"
+                    class="btn primary-button mt-2"  
+                    data-bs-custom-class="bg-tooltip"
+                    data-bs-original-title="Supprimer" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#warningModalTopic"
+                   >
+                    <i class="bi bi-trash3-fill" 
+                        @mouseover="enableTooltip(`cancelTopic${topic.id}`)"
+                        data-bs-toggle="tooltip"
+                        >
+                    </i>
                 </button>
             </div>
             <div class="col d-flex justify-content-center p-0">
-                <button class="btn primary-button mt-2" :id="'shareTopic' + topic.id" data-bs-toggle="tooltip"
-                    data-bs-custom-class="bg-tooltip" data-bs-original-title="Partager"
-                    @mouseover="enableTooltip(`shareTopic${topic.id}`)" disabled>
+                <button :id="'shareTopic' + topic.id"
+                    class="btn primary-button mt-2"
+                    @mouseover="enableTooltip(`shareTopic${topic.id}`)"
+                    data-bs-toggle="tooltip"
+                    data-bs-custom-class="bg-tooltip" 
+                    data-bs-original-title="Partager"
+                    disabled>
                     <i class="bi bi-share-fill"></i>
                 </button>
             </div>
             <div class="col d-flex justify-content-center p-0">
-                <button class="btn primary-button mt-2" :id="'downloadTopic' + topic.id" data-bs-toggle="tooltip"
-                    data-bs-custom-class="bg-tooltip" data-bs-original-title="Télécharger le rapport"
-                    @mouseover="enableTooltip(`downloadTopic${topic.id}`)" disabled>
-                    <i class="bi bi-download"></i>
+                <button :id="'adminVueTopic' + topic.id"
+                    @mouseover="enableTooltip(`adminVueTopic${topic.id}`)"
+                    class="btn primary-button mt-2"
+                    data-bs-toggle="tooltip"
+                    data-bs-custom-class="bg-tooltip"
+                    data-bs-original-title="Voir la vue administrateur"
+                    disabled>
+                    <i class="bi bi-person-fill-gear"></i>
                 </button>
             </div>
         </div>

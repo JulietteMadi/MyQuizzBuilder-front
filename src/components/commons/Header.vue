@@ -1,49 +1,53 @@
 <template>
     <header>
         <div class="fixed-top blue-background">
-            <nav class="navbar navbar-expand-md navbar-dark container-xl d-flex justify-content-between">
-                <div>
-                    <a class="navbar-brand" href="/">
-                        <span class="logo alkatra-font">My<span class="my-color">Quizz</span>Builder</span>
-                    </a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#navbarNavAltMarkup">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                </div>
+            <div class="container">
+                <nav class="navbar navbar-expand-md navbar-dark row d-flex justify-content-between">
+                    <div class="d-flex col-12 col-md-6 justify-content-between">
+                        <a class="navbar-brand" href="/">
+                            <span class="logo alkatra-font">My<span class="my-color">Quizz</span>Builder</span>
+                        </a>
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#navbarNavAltMarkup">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
 
-                <!-- header when authenticated -->
-                <div v-if="token || token !== ''" class="collapse navbar-collapse md-d-flex justify-content-end"
-                    id="navbarNavAltMarkup">
-                    <div class="navbar-nav">
-                        <RouterLink class="nav-link" to="/">Accueil</RouterLink>
-                        <RouterLink class="nav-link" to="/quiz">Quiz</RouterLink>
-                        <RouterLink class="nav-link" to="/themes">Thèmes</RouterLink>
 
-                        <div class="dropdown-center">
-                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">
-                                <i class="bi bi-person-circle"></i>
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li>
-                                    <RouterLink class="dropdown-item disabled" to="#">Mon espace personnel</RouterLink>
-                                </li>
-                                <li>
-                                    <button class="dropdown-item" @click="disconnect">Se déconnecter</button>
-                                </li>
-                            </ul>
+                    <!-- header when authenticated -->
+                    <div v-if="token || token !== ''" class="collapse navbar-collapse md-d-flex justify-content-end col-6"
+                        id="navbarNavAltMarkup">
+                        <div class="navbar-nav">
+                            <RouterLink class="nav-link" to="/">Accueil</RouterLink>
+                            <RouterLink class="nav-link" to="/quiz">Quiz</RouterLink>
+                            <RouterLink class="nav-link" to="/themes">Thèmes</RouterLink>
+
+                            <div class="dropdown-center">
+                                <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-person-circle"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <RouterLink class="dropdown-item disabled" to="#">Mon espace personnel</RouterLink>
+                                    </li>
+                                    <li>
+                                        <button class="dropdown-item" @click="disconnect">Se déconnecter</button>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- header when not authenticated -->
-                <div v-else class="collapse navbar-collapse md-d-flex justify-content-end" id="navbarNavAltMarkup">
-                    <div class="navbar-nav">
-                        <RouterLink class="nav-link" to="/connexion">Me connecter</RouterLink>
-                        <RouterLink class="nav-link" to="/creer-compte">Créer un compte</RouterLink>
+                    <!-- header when not authenticated -->
+                    <div v-else class="collapse navbar-collapse  md-d-flex justify-content-end col-6"
+                        id="navbarNavAltMarkup">
+                        <div class="navbar-nav">
+                            <RouterLink class="nav-link" to="/connexion">Me connecter</RouterLink>
+                            <RouterLink class="nav-link" to="/creer-compte">Créer un compte</RouterLink>
+                        </div>
                     </div>
-                </div>
-            </nav>
+                </nav>
+            </div>
         </div>
     </header>
 </template>
@@ -60,9 +64,9 @@ export default {
     },
 
     methods: {
-        ...mapActions(useUserStore, ['reset']),
+        ...mapActions(useUserStore, ['resetUser']),
         disconnect() {
-            this.reset();
+            this.resetUser();
             this.$router.push({ name: 'signIn' });
         }
     }

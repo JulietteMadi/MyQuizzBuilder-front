@@ -7,30 +7,46 @@
         </div>
         <div class="p-3 row">
             <div class="col d-flex justify-content-center p-0">
-                <button class="btn secundary-button mt-2" :id="'modifyQuiz' + index" data-bs-toggle="tooltip"
-                    data-bs-custom-class="bg-tooltip" data-bs-original-title="Modifier"
-                    @mouseover="enableTooltip(`modifyQuiz${index}`)" disabled>
+                <button :id="'modifyQuiz' + index"
+                    class="btn secundary-button mt-2"
+                    @mouseover="enableTooltip(`modifyQuiz${index}`)"
+                    data-bs-toggle="tooltip"
+                    data-bs-custom-class="bg-tooltip" 
+                    data-bs-original-title="Modifier"
+                    disabled>
                     <i class="bi bi-pencil-square"></i>
                 </button>
             </div>
             <div class="col d-flex justify-content-center p-0">
-                <button class="btn secundary-button mt-2" :id="'cancelQuiz' + index" data-bs-toggle="tooltip"
-                    data-bs-custom-class="bg-tooltip" data-bs-original-title="Supprimer"
-                    @mouseover="enableTooltip(`cancelQuiz${index}`)" disabled>
+                <button :id="'cancelQuiz' + index"
+                    class="btn secundary-button mt-2" 
+                    @mouseover="enableTooltip(`cancelQuiz${index}`)"
+                    data-bs-toggle="tooltip"
+                    data-bs-custom-class="bg-tooltip" 
+                    data-bs-original-title="Supprimer"
+                    disabled>
                     <i class="bi bi-trash3-fill"></i>
                 </button>
             </div>
             <div class="col d-flex justify-content-center p-0">
-                <button class="btn secundary-button mt-2" :id="'shareQuiz' + index" data-bs-toggle="tooltip"
-                    data-bs-custom-class="bg-tooltip" data-bs-original-title="Partager"
-                    @mouseover="enableTooltip(`shareQuiz${index}`)" disabled>
+                <button :id="'shareQuiz' + index"
+                    class="btn secundary-button mt-2"
+                    @mouseover="enableTooltip(`shareQuiz${index}`)"
+                    data-bs-toggle="tooltip"
+                    data-bs-custom-class="bg-tooltip" 
+                    data-bs-original-title="Partager"
+                    disabled>
                     <i class="bi bi-share-fill"></i>
                 </button>
             </div>
             <div class="col d-flex justify-content-center p-0">
-                <button class="btn secundary-button mt-2" :id="'downloadQuiz' + index" data-bs-toggle="tooltip"
-                    data-bs-custom-class="bg-tooltip" data-bs-original-title="Télécharger le rapport"
-                    @mouseover="enableTooltip(`downloadQuiz${index}`)" disabled>
+                <button :id="'downloadQuiz' + index"
+                    class="btn secundary-button mt-2"
+                    @mouseover="enableTooltip(`downloadQuiz${index}`)"   
+                    data-bs-toggle="tooltip"
+                    data-bs-custom-class="bg-tooltip" 
+                    data-bs-original-title="Télécharger le rapport"
+                    disabled>
                     <i class="bi bi-download"></i>
                 </button>
             </div>
