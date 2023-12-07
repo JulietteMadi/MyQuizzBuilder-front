@@ -10,7 +10,7 @@
                 </div>
                 <div class="modal-body">
                     Cette action est irréversible, et vous perdrez toute la question {{ indexDelete + 1 }} :
-                    <b>{{ questions[indexDelete] && questions[indexDelete].name }}</b>
+                    <b v-if="quiz.questions[indexDelete]">{{ quiz.questions[indexDelete].name }}</b>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
@@ -20,11 +20,9 @@
             </div>
         </div>
     </div>
-
     <h1>Créer un quiz</h1>
     <form class="my-5" @submit.prevent="createQuiz()">
         <div class="outlined my-4 p-4">
-
             <!-- Form header -->
             <div class="row">
                 <div class="col-12 col-md-8">
@@ -45,10 +43,10 @@
 
             <!-- List of questions -->
             <div class="accordion" id="questionsList">
-                <div class="accordion-item" v-for="(question, index) of questions" :key="index" ref="accordionItems">
-                    <QuizQuestions :question="question" :index="index" @askDeleteQuestion="askDeleteQuestion" />
+                <div class="accordion-item" v-for="(question, index) of quiz.questions" :key="index" ref="accordionItems">
+                    <QuizQuestions :question="question" :questionIndex="index" :topics="topics" :activeIndex="activeIndex" @askDeleteQuestion="askDeleteQuestion" />
                 </div>
-                <button class="btn secundary-button mt-2" @click="addQuestion" type="button">
+                <button class="btn secundary-button mt-4" @click="addQuestion" type="button">
                     <i class="bi bi-plus-circle" id="addButton"></i>
                     Ajouter une question
                 </button>
@@ -67,6 +65,8 @@
 
 <script>
 import QuizQuestions from "../components/quizzes/QuizQuestions.vue";
+import { useUserStore } from "../stores/userStore";
+import { mapState } from "pinia"
 
 export default {
     data() {
@@ -75,8 +75,9 @@ export default {
                 name: "",
                 questions: []
             },
-            questions: [],
-            indexDelete: 0
+            indexDelete: 0,
+            topics : [],
+            activeIndex: 0
         }
     },
 
@@ -84,8 +85,13 @@ export default {
         QuizQuestions
     },
 
+    computed: {
+        ...mapState(useUserStore, ["token"])
+    },
+
     mounted() {
         this.addQuestion();
+        this.getAllTopics();
     },
 
     methods: {
@@ -93,30 +99,35 @@ export default {
             this.$router.push({ name: 'quiz' });
         },
         addQuestion() {
-            this.questions.push(
+            this.quiz.questions.push(
                 {
                     name: '',
                     topic: '',
                     answers: [
                         { name: '', valid: false },
-                        { name: '', valid: false },
-                        { name: '', valid: false },
                         { name: '', valid: false }
                     ],
                     answerDescription: ''
                 });
-            this.$nextTick(() => {
-                const accordionItems = this.$refs.accordionItems;
-                const lastAccordionItem = accordionItems[accordionItems.length - 1];
-                lastAccordionItem.scrollIntoView({ behavior: 'smooth', block: 'end' });
-            });
+            const newIndex = this.quiz.questions.length - 1;
+            this.activeIndex = newIndex;
         },
         askDeleteQuestion(index) {
             this.indexDelete = index;
         },
         deleteQuestion(index) {
-            this.questions.splice(index, 1);
+            this.quiz.questions.splice(index, 1);
         },
+
+        async getAllTopics() {
+            const headers = { 'Authorization': `Bearer ${this.token}` }
+            const resp = await this.$http.get('/topics', { headers: headers });
+            if (resp.status == 200 || resp.status == 204) {
+                this.topics = resp.body;
+            } else {
+                console.error(resp);
+            }
+        }
     }
 }
 </script>

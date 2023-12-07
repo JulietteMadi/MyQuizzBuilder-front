@@ -218,10 +218,6 @@ export default {
     },
 
     props: {
-        index: {
-            type: Number,
-            default: null
-        },
         guide: {
             type: Object,
             default: null
@@ -233,7 +229,11 @@ export default {
         allGuides: {
             type: Object,
             default: null
-        }
+        },
+        index: {
+            type: Number,
+            default: null
+        },
     },
 
     methods: {

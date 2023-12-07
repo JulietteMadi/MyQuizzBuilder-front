@@ -61,8 +61,6 @@
                     <ul>
                         <li>Pseudo : {{ userName }}</li>
                         <li>Mail : {{ userEmail }}</li>
-                        <li>Dernière connexion : 24/05/2023 15:51</li>
-                        <li>Nombre de contributions : 19</li>
                     </ul>
                 </div>
             </div>

@@ -58,8 +58,25 @@ p {
 }
 
 .primary-button:disabled {
-    background-color: #54626F;
+    background-color: var(--second-dark-color);
     color: white;
+}
+
+.primary-button-outlined {
+    background-color: white;
+    border: var(--main-blue-color) 1px solid;
+    color: var(--main-blue-color);
+}
+
+.primary-button-outlined:hover {
+    background-color: var(--main-blue-color);
+    color: white;
+}
+
+.primary-button-outlined:disabled {
+    background-color: white;
+    border: var(--second-dark-color) 1px solid;
+    color: var(--second-dark-color);
 }
 
 .secundary-button {

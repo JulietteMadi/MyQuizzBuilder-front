@@ -25,9 +25,10 @@
 </template>
 <script>
 import { useVuelidate } from '@vuelidate/core';
-import { required, maxLength, minLength, helpers, email } from '@vuelidate/validators';
+import { required, helpers, email } from '@vuelidate/validators';
 
-const passwordValidator = helpers.regex(/(?=.\d)(?=.[a-z])(?=.[A-Z])(?=.[!$*])(?!. ).{8,42}/);
+const passwordValidator = helpers.regex(/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!$*])(?!. ).{8,42}/);
+const pseudoValidator = helpers.regex(/[a-zA-Z0-9]{4,20}/);
 
 export default {
     setup() {
@@ -45,9 +46,18 @@ export default {
 
     validations() {
         return {
-            pseudo: { required, minLength: minLength(4), maxLength: maxLength(20) },
-            email: { required, email },
-            password: { required, passwordValidator }
+            pseudo: { 
+                required: helpers.withMessage('Veuillez renseigner un pseudo', required), 
+                pseudoValidator: helpers.withMessage('Votre pseudo doit contenir entre 4 et 20 lettres ou chiffres', pseudoValidator)
+            },
+            email: { 
+                required: helpers.withMessage('Veuillez renseigner un email', required), 
+                email: helpers.withMessage('Veuillez renseigner une adresse email valide', email)
+            },
+            password: { 
+                required: helpers.withMessage('Veuillez renseigner un mot de passe', required),
+                passwordValidator :  helpers.withMessage('Votre mot de passe doit que tenir entre 8 et 4 caractères dont au moins une majuscule, une minuscule, un chiffre et un parmi !$*', passwordValidator)
+            }
         }
     },
 
