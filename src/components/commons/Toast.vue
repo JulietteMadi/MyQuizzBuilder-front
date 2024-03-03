@@ -1,14 +1,3 @@
-<script>
-export default {
-    props: {
-        id: {
-            type: String,
-            default: null
-        }
-    }
-}
-</script>
-
 <template>
     <div :id="id" class="toast-container p-3 top-0 start-50 translate-middle-x">
         <div class="toast shadow-sm">
@@ -20,3 +9,13 @@ export default {
         </div>
     </div>
 </template>
+<script>
+export default {
+    props: {
+        id: {
+            type: String,
+            default: null
+        }
+    }
+}
+</script>

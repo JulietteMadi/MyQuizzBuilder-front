@@ -3,35 +3,40 @@
         <div class="card-header quiz-header" style="height: 5rem;">
         </div>
         <div class="blue-background p-2">
-            <h5 class="text-white">{{ quizName }}</h5>
+            <h5 class="text-white">{{ quiz.name }}</h5>
         </div>
         <div class="p-3 row">
             <div class="col d-flex justify-content-center p-0">
-                <button :id="'modifyQuiz' + index"
+                <button :id="'modifyQuiz' + quiz.id"
+                @click="$emit('updateQuiz', quiz.id), disableTooltip(`modifyQuiz${quiz.id}`)"
                     class="btn secundary-button mt-2"
-                    @mouseover="enableTooltip(`modifyQuiz${index}`)"
+                    @mouseover="enableTooltip(`modifyQuiz${quiz.id}`)"
                     data-bs-toggle="tooltip"
                     data-bs-custom-class="bg-tooltip" 
                     data-bs-original-title="Modifier"
-                    disabled>
+                    >
                     <i class="bi bi-pencil-square"></i>
                 </button>
             </div>
             <div class="col d-flex justify-content-center p-0">
-                <button :id="'cancelQuiz' + index"
+                <button :id="'cancelQuiz' + quiz.id"
+                @click="$emit('deleteQuiz', quiz.id)"
                     class="btn secundary-button mt-2" 
-                    @mouseover="enableTooltip(`cancelQuiz${index}`)"
-                    data-bs-toggle="tooltip"
                     data-bs-custom-class="bg-tooltip" 
                     data-bs-original-title="Supprimer"
-                    disabled>
-                    <i class="bi bi-trash3-fill"></i>
+                    data-bs-toggle="modal" 
+                    data-bs-target="#warningDeleteModal"
+                    >
+                    <i class="bi bi-trash3-fill"
+                        @mouseover="enableTooltip(`cancelQuiz${quiz.id}`)"
+                        data-bs-toggle="tooltip"
+                    ></i>
                 </button>
             </div>
             <div class="col d-flex justify-content-center p-0">
-                <button :id="'shareQuiz' + index"
+                <button :id="'shareQuiz' + quiz.id"
                     class="btn secundary-button mt-2"
-                    @mouseover="enableTooltip(`shareQuiz${index}`)"
+                    @mouseover="enableTooltip(`shareQuiz${quiz.id}`)"
                     data-bs-toggle="tooltip"
                     data-bs-custom-class="bg-tooltip" 
                     data-bs-original-title="Partager"
@@ -40,9 +45,9 @@
                 </button>
             </div>
             <div class="col d-flex justify-content-center p-0">
-                <button :id="'downloadQuiz' + index"
+                <button :id="'downloadQuiz' + quiz.id"
                     class="btn secundary-button mt-2"
-                    @mouseover="enableTooltip(`downloadQuiz${index}`)"   
+                    @mouseover="enableTooltip(`downloadQuiz${quiz.id}`)"   
                     data-bs-toggle="tooltip"
                     data-bs-custom-class="bg-tooltip" 
                     data-bs-original-title="Télécharger le rapport"
@@ -56,12 +61,8 @@
 <script>
 export default {
     props: {
-        quizName: {
-            type: String,
-            default: null
-        },
-        index: {
-            type: String,
+        quiz: {
+            type: Object,
             default: null
         }
     },
@@ -70,6 +71,11 @@ export default {
             const element = document.getElementById(id)
             const tooltip = bootstrap.Tooltip.getOrCreateInstance(element);
             tooltip.enable();
+        },
+        disableTooltip(id) {
+            const element = document.getElementById(id);
+            const tooltip = bootstrap.Tooltip.getOrCreateInstance(element);
+            tooltip.dispose();
         }
     }
 }

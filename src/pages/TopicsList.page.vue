@@ -1,25 +1,7 @@
 <template>
     <!-- Warning delete modal -->
-    <div class="modal fade" id="warningModalTopic" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5 text-danger" id="labelModal">Êtes-vous sûr.e de vouloir supprimer ce
-                        thème ?</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    Cette action est irréversible, et vous perdrez toute le thème :
-                    <b v-if="topicToDelete">{{ topicToDelete.name }}</b>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
-                        @click="deleteTopic(topicToDelete.id)">Supprimer</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <DeleteDialog :dialogMessage="deleteDialogMessage" @deleteItem="deleteTopic" />
+
     <!-- Header -->
     <div class="row my-5 mx-auto">
         <div class="col-md mx-auto">
@@ -41,7 +23,7 @@
     </div>
     <!-- TopicList -->
     <div class="row my-5 mx-auto text-center">
-        <div class=" col-12 col-sm-6 col-md-4 col-lg-3 py-3" v-for="(topic, index) in filteredTopics">
+        <div class=" col-12 col-sm-6 col-md-4 col-lg-3 py-3" v-for="(topic, index) in filteredTopics" :key="topic.id">
             <TopicItem :topic="topic" :index="index.toString()" @deleteTopic="askDeleteTopic" @updateTopic="updateTopic" />
         </div>
     </div>
@@ -49,9 +31,10 @@
 
 <script>
 import { RouterLink } from 'vue-router';
-import TopicItem from '../components/topics/TopicItem.vue'
 import { useUserStore } from '../stores/userStore';
 import { mapState } from 'pinia';
+import TopicItem from '../components/topics/TopicItem.vue';
+import DeleteDialog from '../components/commons/DeleteDialog.vue';
 
 export default {
     data() {
@@ -75,7 +58,8 @@ export default {
             return {
                 allTopics: [],
                 searchTopic: "",
-                topicToDelete: {}
+                topicToDelete: {},
+                deleteDialogMessage: {}
             };
         }
     },
@@ -83,7 +67,8 @@ export default {
 
 
     components: {
-        TopicItem
+        TopicItem, 
+        DeleteDialog
     },
 
     computed: {
@@ -91,24 +76,25 @@ export default {
 
         filteredTopics() {
             const search = this.searchTopic.toLowerCase();
-            if (!search) {
-                return this.allTopics.reverse();
-            } else {
-                return this.allTopics.filter(topic => {
-                    const name = topic.name.toLowerCase();
-                    return name.includes(search);
-                });
-            }
+            return this.allTopics.filter(topic => {
+                const name = topic.name.toLowerCase();
+                return name.includes(search);
+            });
         }
     },
 
-    mounted() {
-        if (import.meta.env.MODE !== "demo") this.getAllTopics();
+    async mounted() {
+        if (import.meta.env.MODE !== "demo") {await this.getAllTopics();}
 
     },
     methods: {
         askDeleteTopic(index) {
             this.topicToDelete = this.allTopics.find(topic => topic.id === index);
+            this.deleteDialogMessage = {
+                indexDelete: this.topicToDelete.id,
+                title: `Êtes vous sûr-e de vouloir supprimer ce thème ?`,
+                body: "Cette action est irréversible, et vous supprimerez définitivement le thème: " + this.topicToDelete.name,
+            }
         },
         updateTopic(id, name) {
             this.$router.push({ name: 'modifierTheme', params: { id: id, name: name } })
