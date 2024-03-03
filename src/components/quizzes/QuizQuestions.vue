@@ -7,12 +7,19 @@
             </button>
         </div>
         <div class="col-1 px-0 d-flex justify-content-center align-items-center">
-            <button class="btn" data-bs-toggle="modal" data-bs-target="#warningModal" type="button">
-                <i class="bi bi-trash3-fill primary clickable-icon" :id="'deleteQuestion' + questionIndex"
-                    style="font-size: 1.5rem; color: var(--second-dark-color);" @click="$emit('askDeleteQuestion', questionIndex)"
-                    data-bs-toggle="tooltip" data-bs-custom-class="bg-tooltip"
+            <button class="btn" 
+                data-bs-toggle="modal" 
+                data-bs-target="#warningDeleteModal" 
+                type="button">
+                <i :id="'deleteQuestion' + questionIndex"
+                    @click="$emit('askDeleteQuestion', questionIndex, 'warningModalQuestion')"
+                    class="bi bi-trash3-fill primary clickable-icon"
+                    style="font-size: 1.5rem; color: var(--second-dark-color);"
+                    data-bs-toggle="tooltip" 
+                    data-bs-custom-class="bg-tooltip"
                     :data-bs-original-title="'Supprimer la question ' + (questionIndex + 1)"
-                    @mouseover="enableTooltip(`deleteQuestion${questionIndex}`)"></i>
+                    @mouseover="enableTooltip(`deleteQuestion${questionIndex}`)">
+                </i>
             </button>
         </div>
     </h3>
@@ -31,8 +38,8 @@
                         Choisissez le thème de votre question :
                     </label>
                     <select class="form-select" :id="`questionTopic${questionIndex}`" :name="`questionTopic${questionIndex}`"
-                        v-model="question.topic">
-                        <option v-for="(topic, index) of topics">{{topic.name}}</option>
+                        v-model="question.topicId">
+                        <option v-for="(topic, index) of topics" :key="topic.id" :value="topic.id">{{topic.name}}</option>
                     </select>
                 </div>
             </div>
@@ -61,8 +68,13 @@
                 <label :for="`answerDescription${questionIndex}`" class="form-label mt-5">
                     <h3>Description de la ou les bonne(s) réponse(s)</h3>
                 </label>
-                <textarea class="form-control" :id="`answerDescription${questionIndex}`" :name="`answerDescription${questionIndex}`"
-                    rows="5"></textarea>
+                <textarea 
+                    v-model="question.answerDescription"
+                    :id="`answerDescription${questionIndex}`" 
+                    :name="`answerDescription${questionIndex}`"
+                    class="form-control"
+                    rows="5">
+                </textarea>
             </div>
         </div>
     </div>

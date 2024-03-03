@@ -1,12 +1,10 @@
 <template>
-    <!-- Warning delete modal -->
     <DeleteDialog :dialogMessage="deleteDialogMessage" @deleteItem="deleteQuestion" />
-    <h1>Créer un quiz</h1>
-    {{ quiz.questions }}
-    <form class="my-5" @submit.prevent="createQuiz">
+    <h1>Modifier le quiz "{{ quiz.name }}"</h1>
+    <form class="my-5" @submit.prevent="updateQuiz">
         <div class="outlined my-4 p-4">
             <!-- Form header -->
-            <div class="row">
+            <div clas="row">
                 <div class="col-12 col-md-8">
                     <label for="name" class="fs-5 mt-2">Nom du Quiz</label>
                     <input v-model="quiz.name"
@@ -15,7 +13,6 @@
                         type="text" 
                         maxlength="255" 
                         class="form-control"
-                        placeholder="Ex : recrutement"
                         >
                 </div>
                 <div class="col-12 col-md-4">
@@ -36,7 +33,7 @@
             <!-- List of questions -->
             <div class="accordion" id="questionsList">
                 <div class="accordion-item" v-for="(question, index) of quiz.questions" :key="index" ref="accordionItems">
-                    <QuizQuestions :question="question" :questionIndex="index" :topics="topics" :activeIndex="activeIndex" @askDeleteQuestion="askDeleteQuestion" />
+                    <QuizQuestions :question="question" :questionIndex="index" :topics="topics" @askDeleteQuestion="askDeleteQuestion" />
                 </div>
                 <button class="btn secundary-button mt-4" @click="addQuestion" type="button">
                     <i class="bi bi-plus-circle" id="addButton"></i>
@@ -49,73 +46,49 @@
         <div class="align-items-end flex-column px-2 row mb-5">
             <button class="btn primary-button mt-2 col-12 col-md-3" type="submit">
                 <i class="bi bi-plus-circle me-3"></i>
-                Créer un quiz
+                Modifier le quiz
             </button>
         </div>
+
     </form>
 </template>
-
 <script>
-import { useUserStore } from "../stores/userStore";
-import { mapState } from "pinia"
+import { useRoute } from 'vue-router';
+import { mapState } from 'pinia';
+import { useUserStore } from '../stores/userStore';
 import QuizQuestions from "../components/quizzes/QuizQuestions.vue";
-import DeleteDialog from "../components/commons/DeleteDialog.vue";
+import DeleteDialog from '../components/commons/DeleteDialog.vue';
 
 export default {
-    data() {
-        if (import.meta.env.MODE === "demo") {
-            return {
-                quiz: {
-                    name: "",
-                    image: "",
-                    userId: 1,
-                    questions: []
-                },
-                indexDelete: 0,
-                topics : [
-                    { id: 1, name: "Recrutement" },
-                    { id: 2, name: "Onboarding" },
-                    { id: 3, name: "Sensibilisation" },
-                    { id: 4, name: "RSE en grand groupe" },
-                    { id: 5, name: "Jeunes entrepreneurs" },
-                    { id: 6, name: "Parité en entreprise" },
-                    { id: 7, name: "Formations internes" },
-                    { id: 8, name: "Rédaction de fiche emploi" },
-                    { id: 9, name: "Sélectionner les CV" }
-                ],
-                activeIndex: 0
-            }
-        } else {
-            return {
-                quiz: {
-                    name: "",
-                    image: "",
-                    userId: 1,
-                    questions: []
-                },
-                indexDelete: 0,
-                topics : [],
-                activeIndex: 0,
-                deleteDialogMessage: {}
-            }
+    setup(){
+        return {
+            route: useRoute()
+        }
+    },
+    data(){
+        return {
+            id: this.route.params.id, 
+            quiz: {},
+            topics: [],
+            deleteDialogMessage: {}
         }
     },
 
     components: {
-        QuizQuestions,
+        QuizQuestions, 
         DeleteDialog
+    },
+
+    async mounted(){
+        this.initQuiz();
+        this.getAllTopics();
     },
 
     computed: {
         ...mapState(useUserStore, ["token"])
     },
 
-    mounted() {
-        this.addQuestion();
-        this.getAllTopics();
-    },
-
-    methods: {
+    methods:{
         addQuestion() {
             this.quiz.questions.push(
                 {
@@ -133,8 +106,8 @@ export default {
         askDeleteQuestion(index) {
             this.deleteDialogMessage = {
                 indexDelete: index,
-                title: `Êtes vous sûr-e de vouloir supprimer la question ${index + 1} ?`,
-                body: "Cette action est irréversible, et vous supprimerez définitivement la question: " + this.quiz.questions[index].name,
+                title: `Êtes vous sûr-e de vouloir supprimer la question ${index + 1} :`,
+                body:  "Cette action est irréversible, et vous supprimerez définitivement la question: " + this.quiz.questions[index].name,
             }
             this.indexDelete = index;
         },
@@ -149,7 +122,17 @@ export default {
                 }
             }
         },
+    
+        async initQuiz(){
+            const headers = { 'Authorization': `Bearer ${this.token}` };
+            const resp = await this.$http.get(`/quizzes/${this.id}`,  { headers: headers });
+            if(resp.status === 204 || resp.status === 200){
+                this.quiz = resp.body;
+            } else {
+                console.error(resp);
+            }
 
+        },
         async getAllTopics() {
             const headers = { 'Authorization': `Bearer ${this.token}` }
             const resp = await this.$http.get('/topics', { headers: headers });
@@ -159,18 +142,18 @@ export default {
                 console.error(resp);
             }
         },
-        async createQuiz() {
+        async updateQuiz(){
             this.formatQuestionsAnswersWithIndex();
             const headers = { 'Authorization': `Bearer ${this.token}` };
-            const resp = await this.$http.post('/quizzes', this.quiz, { headers: headers });
+            const resp = await this.$http.put(`/quizzes/${this.id}`, this.quiz, { headers: headers });
             if (resp.status == 204 || resp.status == 200) {
-                this.$toast.success("toast-app", `Le guide ${this.quiz.name} a bien été créé`);
+                this.$toast.success("toast-app", `Le guide ${this.quiz.name} a bien été modifié`);
                 this.$router.push({ name: 'quiz' });
             } else {
                 console.error(resp);
-                this.$toast.error("toast-app", "Un problème est survenu à la création de ce quiz");
+                this.$toast.error("toast-app", "Un problème est survenu à la modification de ce quiz");
             }
-        },
+        }
     }
 }
 </script>

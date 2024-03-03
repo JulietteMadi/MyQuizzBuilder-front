@@ -25,7 +25,7 @@
                     data-bs-custom-class="bg-tooltip"
                     data-bs-original-title="Supprimer" 
                     data-bs-toggle="modal" 
-                    data-bs-target="#warningModalTopic"
+                    data-bs-target="#warningDeleteModal"
                    >
                     <i class="bi bi-trash3-fill" 
                         @mouseover="enableTooltip(`cancelTopic${topic.id}`)"
