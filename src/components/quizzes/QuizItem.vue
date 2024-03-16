@@ -20,7 +20,7 @@
             </div>
             <div class="col d-flex justify-content-center p-0">
                 <button :id="'cancelQuiz' + quiz.id"
-                @click="$emit('deleteQuiz', quiz.id)"
+                    @click="$emit('deleteQuiz', quiz.id)"
                     class="btn secundary-button mt-2" 
                     data-bs-custom-class="bg-tooltip" 
                     data-bs-original-title="Supprimer"
@@ -35,13 +35,15 @@
             </div>
             <div class="col d-flex justify-content-center p-0">
                 <button :id="'shareQuiz' + quiz.id"
+                    @click="$emit('shareQuiz', quiz.id)"
                     class="btn secundary-button mt-2"
-                    @mouseover="enableTooltip(`shareQuiz${quiz.id}`)"
-                    data-bs-toggle="tooltip"
                     data-bs-custom-class="bg-tooltip" 
                     data-bs-original-title="Partager"
-                    disabled>
-                    <i class="bi bi-share-fill"></i>
+                    >
+                    <i class="bi bi-share-fill"
+                        @mouseover="enableTooltip(`shareQuiz${quiz.id}`)"
+                        data-bs-toggle="tooltip"
+                    ></i>
                 </button>
             </div>
             <div class="col d-flex justify-content-center p-0">

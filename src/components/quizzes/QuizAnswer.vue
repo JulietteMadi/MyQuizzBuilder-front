@@ -33,10 +33,22 @@
         </div>
         <input class="form-check-input invisible" type="checkbox" value="" :id="`checkAnswer${questionIndex}-${answerIndex}`"
                 v-model="answer.valid">
+        <p v-if="v$.answer.name.$error" 
+            class="text-danger">
+            {{ v$.answer.name.$errors[0].$message }}
+        </p>
     </div>
 </template>
 <script>
+import { useVuelidate } from '@vuelidate/core';
+import { required, maxLength, minLength, helpers } from '@vuelidate/validators';
+
 export default {
+    setup() {
+        return {
+            v$: useVuelidate({ $autoDirty: true })
+        }
+    },
     props: {
         answer: {
             type : Object,
@@ -52,6 +64,18 @@ export default {
             type: Number
         }
     },
+
+    validations(){
+        return {
+            answer:{
+                name: {
+                    required: helpers.withMessage('Veuillez décrire la réponse', required),
+                    maxLength: helpers.withMessage('La réponse ne peut pas dépasser 255 caractères', maxLength(255))
+                }
+            }
+        }
+    },
+
     computed:{
         deleteDisabled(){
             return this.answersLength <= 2;

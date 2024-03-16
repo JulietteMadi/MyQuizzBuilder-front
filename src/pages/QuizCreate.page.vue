@@ -2,7 +2,6 @@
     <!-- Warning delete modal -->
     <DeleteDialog :dialogMessage="deleteDialogMessage" @deleteItem="deleteQuestion" />
     <h1>Créer un quiz</h1>
-    {{ quiz.questions }}
     <form class="my-5" @submit.prevent="createQuiz">
         <div class="outlined my-4 p-4">
             <!-- Form header -->
@@ -17,6 +16,10 @@
                         class="form-control"
                         placeholder="Ex : recrutement"
                         >
+                    <p v-if="v$.quiz.name.$error" 
+                        class="text-danger">
+                        {{ v$.quiz.name.$errors[0].$message }}
+                    </p>
                 </div>
                 <div class="col-12 col-md-4">
                     <label for="image" class="fs-5 mt-2">Illustration du quiz</label>
@@ -25,6 +28,10 @@
                         name="image"
                         class="form-control" 
                         type="text">
+                    <p v-if="v$.quiz.image.$error" 
+                        class="text-danger">
+                        {{ v$.quiz.image.$errors[0].$message }}
+                    </p>
                 </div>
                 <div class="col-12 my-4">
                     <p>Veuillez ajouter entre 5 et 50 questions pour votre quiz<br>
@@ -38,16 +45,15 @@
                 <div class="accordion-item" v-for="(question, index) of quiz.questions" :key="index" ref="accordionItems">
                     <QuizQuestions :question="question" :questionIndex="index" :topics="topics" :activeIndex="activeIndex" @askDeleteQuestion="askDeleteQuestion" />
                 </div>
-                <button class="btn secundary-button mt-4" @click="addQuestion" type="button">
+                <button class="btn secundary-button mt-4" @click="addQuestion" type="button" :disabled="quiz.questions.length === 50">
                     <i class="bi bi-plus-circle" id="addButton"></i>
                     Ajouter une question
                 </button>
             </div>
         </div>
-
         <!-- Register new quiz button-->
         <div class="align-items-end flex-column px-2 row mb-5">
-            <button class="btn primary-button mt-2 col-12 col-md-3" type="submit">
+            <button class="btn primary-button mt-2 col-12 col-md-3" type="submit" :disabled="invalidForm">
                 <i class="bi bi-plus-circle me-3"></i>
                 Créer un quiz
             </button>
@@ -57,11 +63,18 @@
 
 <script>
 import { useUserStore } from "../stores/userStore";
-import { mapState } from "pinia"
+import { mapState } from "pinia";
+import { useVuelidate } from '@vuelidate/core';
+import { required, maxLength, minLength, helpers } from '@vuelidate/validators';
 import QuizQuestions from "../components/quizzes/QuizQuestions.vue";
 import DeleteDialog from "../components/commons/DeleteDialog.vue";
 
 export default {
+    setup() {
+        return {
+            v$: useVuelidate({ $autoDirty: true })
+        }
+    },
     data() {
         if (import.meta.env.MODE === "demo") {
             return {
@@ -101,13 +114,35 @@ export default {
         }
     },
 
+    validations(){
+        return {
+            quiz:{
+                name: {
+                    required: helpers.withMessage('Veuillez renseigner un nom pour ce quiz', required),
+                    maxLength: helpers.withMessage('Le nom du quiz ne peut pas dépasser 255 caractères', maxLength(255))
+                },
+                image: {
+                    required: helpers.withMessage('Veuillez ajouter une image à ce quiz', required)
+                },
+                questions: {
+                    required: helpers.withMessage('Veuillez ajouter des questions à ce quiz', required),
+                    maxLength: helpers.withMessage('Ce quiz ne peut pas contenir plus de 50 questions', maxLength(50)),
+                    minLength: helpers.withMessage('Ce quiz doit contenir au moins 5 question', minLength(5))
+                }
+            }
+        }
+    },
+
     components: {
         QuizQuestions,
         DeleteDialog
     },
 
     computed: {
-        ...mapState(useUserStore, ["token"])
+        ...mapState(useUserStore, ["token"]),
+        invalidForm() {
+            return this.quiz.questions.length < 5 || !this.quiz.name || !this.quiz.image;
+        },
     },
 
     mounted() {

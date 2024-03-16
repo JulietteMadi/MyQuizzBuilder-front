@@ -56,6 +56,16 @@ const router = createRouter({
             path: '/quiz/modifier/:id',
             name: 'modifierQuiz',
             component:() => import('../pages/QuizUpdate.page.vue')
+        },
+        {
+            path: '/quiz/:id/bienvenue',
+            name: 'jouerQuiz',
+            component:() => import('../pages/QuizPlay.page.vue')
+        },
+        {
+            path: '/quiz/:id/:questionIndex',
+            name: 'repondreQuestion',
+            component:() => import('../pages/QuizQuestion.page.vue')
         }
     ]
 })
@@ -68,5 +78,3 @@ router.beforeEach((to) => {
 })
 
 export default router;
-
-

@@ -126,6 +126,7 @@ export default {
         async initQuiz(){
             const headers = { 'Authorization': `Bearer ${this.token}` };
             const resp = await this.$http.get(`/quizzes/${this.id}`,  { headers: headers });
+            console.log(resp);
             if(resp.status === 204 || resp.status === 200){
                 this.quiz = resp.body;
             } else {
