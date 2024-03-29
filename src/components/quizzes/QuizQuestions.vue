@@ -1,26 +1,50 @@
 <template>
     <!-- List of question -->
     <h3 class="accordion-header row d-flex me-0" :id="`heading${questionIndex}`">
+
+        <!-- Header of question -->
         <div class="col-11 pe-0">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" :data-bs-target="`#collapse${questionIndex}`">
                 Question {{ questionIndex + 1 }} <span v-if="question.name"> : {{ question.name }}</span>
             </button>
         </div>
-        <div class="col-1 px-0 d-flex justify-content-center align-items-center">
-            <button class="btn" 
-                data-bs-toggle="modal" 
-                data-bs-target="#warningDeleteModal" 
-                type="button">
-                <i :id="'deleteQuestion' + questionIndex"
-                    @click="$emit('askDeleteQuestion', questionIndex, 'warningModalQuestion')"
-                    class="bi bi-trash3-fill primary clickable-icon"
-                    style="font-size: 1.5rem; color: var(--second-dark-color);"
-                    data-bs-toggle="tooltip" 
-                    data-bs-custom-class="bg-tooltip"
-                    :data-bs-original-title="'Supprimer la question ' + (questionIndex + 1)"
-                    @mouseover="enableTooltip(`deleteQuestion${questionIndex}`)">
-                </i>
-            </button>
+        <div class="col-1 px-0 d-flex justify-content-around align-items-center">
+                <div class="d-flex flex-column">
+                    <button class="btn btn-outline-light p-0" type="button"  
+                    @click="$emit('moveQuestionUp', questionIndex)"
+                    :disabled="questionIndex === 0">
+                        <i :id="(`questionUp${questionIndex}`)"
+                            class="bi bi-chevron-up primary clickable-icon"
+                            data-bs-toggle="tooltip" 
+                            data-bs-custom-class="bg-tooltip"
+                            :data-bs-original-title="'Monter la question ' + (questionIndex + 1)"
+                            @mouseover="enableTooltip(`questionUp${questionIndex}`)"></i>
+                    </button>
+                    <button class="btn btn-outline-light p-0" type="button"
+                    @click="$emit('moveQuestionDown', questionIndex)"
+                    :disabled="questionIndex === questionsLength - 1">
+                        <i :id="(`questionDown${questionIndex}`)"
+                        class="bi bi-chevron-down primary clickable-icon"
+                        data-bs-toggle="tooltip" 
+                        data-bs-custom-class="bg-tooltip"
+                        :data-bs-original-title="'Descendre la question ' + (questionIndex + 1)"
+                        @mouseover="enableTooltip(`questionDown${questionIndex}`)"></i>
+                    </button>
+                </div>
+                <button class="btn" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#warningDeleteModal" 
+                    type="button">
+                    <i :id="'deleteQuestion' + questionIndex"
+                        @click="$emit('askDeleteQuestion', questionIndex, 'warningModalQuestion')"
+                        class="bi bi-trash3-fill primary clickable-icon"
+                        style="font-size: 1.5rem; color: var(--second-dark-color);"
+                        data-bs-toggle="tooltip" 
+                        data-bs-custom-class="bg-tooltip"
+                        :data-bs-original-title="'Supprimer la question ' + (questionIndex + 1)"
+                        @mouseover="enableTooltip(`deleteQuestion${questionIndex}`)">
+                    </i>
+                </button>
         </div>
     </h3>
     <div :id="`collapse${questionIndex}`" class="accordion-collapse collapse" :class="{ show: activeIndex === questionIndex }"
@@ -51,6 +75,7 @@
                     </p>
                 </div>
             </div>
+
             <!-- List of answers -->
             <div class="row mt-5">
                 <div class="col-12">
@@ -117,6 +142,10 @@ export default {
             default: 0
         },
         activeIndex: {
+            type: Number,
+            default: 0
+        },
+        questionsLength: {
             type: Number,
             default: 0
         }

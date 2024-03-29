@@ -33,7 +33,15 @@
             <!-- List of questions -->
             <div class="accordion" id="questionsList">
                 <div class="accordion-item" v-for="(question, index) of quiz.questions" :key="index" ref="accordionItems">
-                    <QuizQuestions :question="question" :questionIndex="index" :topics="topics" @askDeleteQuestion="askDeleteQuestion" />
+                    <QuizQuestions 
+                        :question="question" 
+                        :questionIndex="index" 
+                        :topics="topics"
+                        :questionsLength="quiz.questions.length"
+                        @askDeleteQuestion="askDeleteQuestion" 
+                        @moveQuestionDown="moveQuestionDown"
+                        @moveQuestionUp="moveQuestionUp"
+                        />
                 </div>
                 <button class="btn secundary-button mt-4" @click="addQuestion" type="button">
                     <i class="bi bi-plus-circle" id="addButton"></i>
@@ -58,6 +66,7 @@ import { mapState } from 'pinia';
 import { useUserStore } from '../stores/userStore';
 import QuizQuestions from "../components/quizzes/QuizQuestions.vue";
 import DeleteDialog from '../components/commons/DeleteDialog.vue';
+import { moveToNextInArray, moveToPreviousInArray } from "../services/sortService";
 
 export default {
     setup(){
@@ -114,6 +123,15 @@ export default {
         deleteQuestion(index) {
             this.quiz.questions.splice(index, 1);
         },
+        moveQuestionUp(index){
+            const tmp = moveToPreviousInArray(this.quiz.questions, index);
+            this.quiz.questions = tmp;
+        },
+        moveQuestionDown(index){
+            const tmp = moveToNextInArray(this.quiz.questions, index);
+            this.quiz.questions = tmp;
+        },
+
         formatQuestionsAnswersWithIndex(){
             for(let i = 0; i < this.quiz.questions.length; i++){
                 this.quiz.questions[i].questionIndex = i;
@@ -126,7 +144,6 @@ export default {
         async initQuiz(){
             const headers = { 'Authorization': `Bearer ${this.token}` };
             const resp = await this.$http.get(`/quizzes/${this.id}`,  { headers: headers });
-            console.log(resp);
             if(resp.status === 204 || resp.status === 200){
                 this.quiz = resp.body;
             } else {

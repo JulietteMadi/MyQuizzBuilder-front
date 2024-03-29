@@ -4,7 +4,7 @@
             <div class="filter-overlay"></div>
             <div class="content-wrapper">
                 <h2 class="text-white mb-4">Vous vous apprêtez à passer le quiz :</h2>
-                <h1 class="text-white">{{ quiz.name }}</h1>
+                <h1 class="text-white">{{ currentQuiz.name }}</h1>
                 Ce quiz porte sur les thèmes suivants :
                 <span v-for="(topic, index) in topics" :key="index">
                     {{ topic.name }}
@@ -23,8 +23,7 @@
 <script>
 import { useRoute } from 'vue-router';
 
-import { mapState, mapWritableState, mapActions } from 'pinia';
-import { useUserStore } from '../stores/userStore';
+import { mapWritableState, mapActions } from 'pinia';
 import { useQuizStore } from '../stores/quizStore';
 
 export default {
@@ -42,12 +41,10 @@ export default {
 
     async mounted(){
         this.initQuiz();
-        this.initAnswersQuiz();
     },
 
     computed: {
-        ...mapState(useUserStore, ["token"]),
-        ...mapWritableState(useQuizStore, ["quiz", "topics"]),
+        ...mapWritableState(useQuizStore, ["currentQuiz", "topics"]),
     },
 
     methods: {
@@ -62,22 +59,22 @@ export default {
                     topicsId.push(question.topicId);
                 }
             })
+            console.log(topicsId);
             this.initTopics({"topicIds" : topicsId});
         },
         async initQuiz(){
-            const headers = { 'Authorization': `Bearer ${this.token}` };
-            const resp = await this.$http.get(`/quizzes/${this.id}`,  { headers: headers });
+            const resp = await this.$http.get(`/quizzes/${this.id}`);
             if(resp.status === 204 || resp.status === 200){
-                this.quiz = resp.body;
-                this.buildTopicsList(this.quiz.questions);
+                this.currentQuiz = resp.body;
+                this.buildTopicsList(this.currentQuiz.questions);
+                this.initAnswersQuiz();
             } else {
                 console.error(resp);
             }
 
         },
         async initTopics(topicsId){
-            const headers = { 'Authorization': `Bearer ${this.token}` };
-            const resp = await this.$http.post('/topics/for-quiz', topicsId, { headers: headers });
+            const resp = await this.$http.post('/topics/play-quiz', topicsId);
             if(resp.status === 204 || resp.status === 200){
                 this.topics = resp.body;
             } else {

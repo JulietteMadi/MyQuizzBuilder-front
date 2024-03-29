@@ -39,7 +39,7 @@
             <h2>Mon profil</h2>
             <div class="row">
                 <div class="col-12 col-sm-6 col-lg-3">
-                    <div class="card shadow">
+                    <div class="card shadow my-2">
                         <div class="card-body d-flex flex-column">
                             <i class="bi bi-person-fill fs-1 mx-auto icon-color"></i>
                             <p class="text-center">
@@ -50,7 +50,7 @@
                     </div>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-3">
-                    <div class="card shadow">
+                    <div class="card shadow my-2">
                         <div class="card-body d-flex flex-column">
                             <i class="bi bi-envelope-fill fs-1 mx-auto icon-color"></i>
                             <p class="text-center">
@@ -61,7 +61,7 @@
                     </div>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-3">
-                    <div class="card shadow h-100">
+                    <div class="card shadow h-100 my-2">
                         <div class="card-body d-flex mx-auto">
                             <div class="align-self-center">
                                 <h2 class="text-center" v-if="managerItems.quizIds">{{ managerItems.quizIds.length }}</h2>
@@ -73,7 +73,7 @@
                     </div>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-3">
-                    <div class="card shadow h-100">
+                    <div class="card shadow h-100 my-2">
                         <div class="card-body d-flex mx-auto">
                             <div class="align-self-center">
                                 <h2 class="text-center" v-if="managerItems.topicIds">{{ managerItems.topicIds.length }}</h2>
@@ -182,7 +182,7 @@ export default {
     },
 
     computed: {
-        ...mapState(useUserStore, ["token", "userEmail", "userName", "userId"]),
+        ...mapState(useUserStore, ["token", "userEmail", "userName"]),
     },
 
     methods: {
@@ -249,10 +249,10 @@ export default {
         },
         async getManagerItems(){
             const headers = { 'Authorization': `Bearer ${this.token}` };
-            const resp = await this.$http.get(`/items/${this.userId}`, {headers: headers});
+            const resp = await this.$http.get("/items", {headers: headers});
             if(resp.status == 200 || resp.status == 204) {
                 this.managerItems.quizIds = resp.body.quizIds;
-                this.managerItems.topicIds = [2, 5, 8, 9];
+                this.managerItems.topicIds = resp.body.topicIds;
             } else {
                 console.error(resp);
             }

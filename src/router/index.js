@@ -60,19 +60,24 @@ const router = createRouter({
         {
             path: '/quiz/:id/bienvenue',
             name: 'jouerQuiz',
-            component:() => import('../pages/QuizPlay.page.vue')
+            component:() => import('../pages/QuizPlayWelcome.page.vue')
         },
         {
             path: '/quiz/:id/:questionIndex',
             name: 'repondreQuestion',
-            component:() => import('../pages/QuizQuestion.page.vue')
+            component:() => import('../pages/QuizPlayQuestion.page.vue')
+        },
+        {
+            path: '/quiz/resultats',
+            name: 'resultatsQuestion',
+            component:() => import('../pages/QuizPlayResult.page.vue')
         }
     ]
 })
 
 router.beforeEach((to) => {
     const userStore = useUserStore();
-    if (userStore.token === '' && to.name !== "signIn" && to.name !== "createAccount") {
+    if (userStore.token === '' && to.name !== "signIn" && to.name !== "createAccount" && to.name !== "jouerQuiz" && to.name !== "repondreQuestion" && to.name !== "resultatsQuestion") {
         return { name: 'signIn' }
     }
 })

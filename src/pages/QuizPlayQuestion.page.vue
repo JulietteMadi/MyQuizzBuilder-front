@@ -1,8 +1,7 @@
 <template>
-    {{ answersQuizResult }}
     <h1 class="text-center my-5">{{ question.name }}</h1>
     <div class="row g-3" v-if="finalResultQuestion === null">
-        <div v-for="(answer, index) of question.answers" class="col-6 form-check">
+        <div v-for="(answer, index) of question.answers" class="col-12 col-md-6 form-check">
             <label 
                 :for="`answer${index}`" 
                 class="w-100 form-check-label card card-answer-available p-5 m-2 text-center fs-5"
@@ -18,7 +17,7 @@
         </div>
         <div v-if="countAnswersSelected === 0" class="text-center">Veuillez sélectionner au moins une réponse</div>
         <div v-else class="text-center">Vous avez sélectionné {{ countAnswersSelected }} réponse(s)</div>
-        <button class="btn primary-button col-12" :disabled="countAnswersSelected === 0" @click="checkQuestionAnswers">
+        <button class="btn primary-button col-12 mb-5" :disabled="countAnswersSelected === 0" @click="checkQuestionAnswers">
             Je valide mes réponses
         </button>
     </div>
@@ -40,7 +39,7 @@
         <h4 class="mt-4">Explications</h4>
         <p>{{ question.answerDescription }}</p>
         <button class="btn primary-button col-12 my-3" @click="nextQuestion">
-            <span v-if="index < question.answers.length">Passer à la question suivante</span>
+            <span v-if="questionIndex < currentQuiz.questions.length - 1">Passer à la question suivante</span>
             <span v-else>Voir les résultats de mon quizz !</span>
         </button>
     </section>
@@ -69,10 +68,10 @@ export default {
         this.initAnswersGiven();
     },
     computed: {
-        ...mapState(useQuizStore, ["quiz"]),
+        ...mapState(useQuizStore, ["currentQuiz"]),
         ...mapWritableState(useQuizStore, ["answersQuizResult"]),
         question(){
-            return this.quiz.questions[this.questionIndex];
+            return this.currentQuiz.questions[this.questionIndex];
         },
         countAnswersSelected(){
             let count = 0;
@@ -98,9 +97,7 @@ export default {
                 if(this.answersGiven[i] !== this.question.answers[i].valid){finalResult = false}
             }
             this.finalResultQuestion = finalResult;
-            if(finalResult){
-                this.answersQuizResult[this.questionIndex] = true;
-            }
+            this.answersQuizResult[this.questionIndex] = finalResult;
         },
         resetDataForNextQuestion(){
             this.questionIndex++;
@@ -109,13 +106,14 @@ export default {
             this.finalResultQuestion = null;
         },
         nextQuestion(){
-            if( this.questionIndex === this.quiz.questions.length - 1){
-                console.log("end of quiz")
+            if( this.questionIndex === this.currentQuiz.questions.length - 1){
+                this.$router.push({ name: 'resultatsQuestion' }) ;
             } else {
                 this.$router.push({ name: 'repondreQuestion', params: { id: this.id, questionIndex: this.questionIndex + 1 } });
                 this.resetDataForNextQuestion();
             }
         }
+        
     }
 }
 </script>

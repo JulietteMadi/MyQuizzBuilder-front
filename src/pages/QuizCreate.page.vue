@@ -43,7 +43,15 @@
             <!-- List of questions -->
             <div class="accordion" id="questionsList">
                 <div class="accordion-item" v-for="(question, index) of quiz.questions" :key="index" ref="accordionItems">
-                    <QuizQuestions :question="question" :questionIndex="index" :topics="topics" :activeIndex="activeIndex" @askDeleteQuestion="askDeleteQuestion" />
+                    <QuizQuestions 
+                        :question="question" 
+                        :questionIndex="index" 
+                        :topics="topics" 
+                        :activeIndex="activeIndex" 
+                        :questionsLength="quiz.questions.length"
+                        @askDeleteQuestion="askDeleteQuestion" 
+                        @moveQuestionDown="moveQuestionDown"
+                        @moveQuestionUp="moveQuestionUp"/>
                 </div>
                 <button class="btn secundary-button mt-4" @click="addQuestion" type="button" :disabled="quiz.questions.length === 50">
                     <i class="bi bi-plus-circle" id="addButton"></i>
@@ -68,6 +76,8 @@ import { useVuelidate } from '@vuelidate/core';
 import { required, maxLength, minLength, helpers } from '@vuelidate/validators';
 import QuizQuestions from "../components/quizzes/QuizQuestions.vue";
 import DeleteDialog from "../components/commons/DeleteDialog.vue";
+import { moveToNextInArray, moveToPreviousInArray } from "../services/sortService";
+
 
 export default {
     setup() {
@@ -81,7 +91,6 @@ export default {
                 quiz: {
                     name: "",
                     image: "",
-                    userId: 1,
                     questions: []
                 },
                 indexDelete: 0,
@@ -103,7 +112,6 @@ export default {
                 quiz: {
                     name: "",
                     image: "",
-                    userId: 1,
                     questions: []
                 },
                 indexDelete: 0,
@@ -175,6 +183,14 @@ export default {
         },
         deleteQuestion(index) {
             this.quiz.questions.splice(index, 1);
+        },
+        moveQuestionUp(index){
+            const tmp = moveToPreviousInArray(this.quiz.questions, index);
+            this.quiz.questions = tmp;
+        },
+        moveQuestionDown(index){
+            const tmp = moveToNextInArray(this.quiz.questions, index);
+            this.quiz.questions = tmp;
         },
         formatQuestionsAnswersWithIndex(){
             for(let i = 0; i < this.quiz.questions.length; i++){

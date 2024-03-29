@@ -25,7 +25,12 @@
     <!-- QuizList -->
     <div class="row my-5 mx-auto text-center">
         <div class=" col-12 col-sm-6 col-md-4 col-lg-3 py-3" v-for="(quiz, index) in filteredQuiz">
-            <QuizItem :quiz="quiz" :index="index.toString()" @deleteQuiz="askDeleteQuiz" @updateQuiz="updateQuiz"/>
+            <QuizItem 
+                :quiz="quiz" 
+                :index="index.toString()" 
+                @deleteQuiz="askDeleteQuiz" 
+                @updateQuiz="updateQuiz"
+                @shareQuiz="shareQuiz"/>
         </div>
     </div>
 </template>
@@ -100,6 +105,10 @@ export default {
                 title: `Êtes vous sûr-e de vouloir supprimer ce quiz ?`,
                 body: "Cette action est irréversible, et vous supprimerez définitivement le quiz: " + this.quizToDelete.name,
             }
+        },
+        shareQuiz(id){
+            const routeUrl = this.$router.resolve({ name: 'jouerQuiz', params: { id: id} }).href;
+            window.open(routeUrl, '_blank');
         },
         async getAllQuizzes(){
             const headers = { 'Authorization': `Bearer ${this.token}` };

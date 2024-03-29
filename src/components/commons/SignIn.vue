@@ -89,7 +89,6 @@ export default {
                 this.token = body.token;
                 this.userName = body.userName;
                 this.userEmail = body.userEmail;
-                this.userId = body.id;
                 this.$router.push({ name: 'home' });
                 this.$toast.success("toast-app", `Vous êtes bien connecté en tant que ${body.userName}`)
             } else {

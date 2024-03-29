@@ -6,8 +6,7 @@ export const useUserStore = defineStore('users', {
         return {
             token: useLocalStorage('token', ""),
             userName: useLocalStorage('userName', ""),
-            userEmail: useLocalStorage('userEmail', ""),
-            userId: useLocalStorage('userId', 0)
+            userEmail: useLocalStorage('userEmail', "")
         }
     },
 
@@ -16,7 +15,6 @@ export const useUserStore = defineStore('users', {
             this.token = '';
             this.userEmail = '';
             this.userName = '';
-            this.userId = 0;
         }
     }
 })

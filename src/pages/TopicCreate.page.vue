@@ -153,6 +153,7 @@ export default {
         },
         async createTopic() {
             const valid = await this.v$.$validate();
+            console.log(this.topic)
             if (valid) {
                     this.guidesFormat();
                     const headers = { 'Authorization': `Bearer ${this.token}` }
