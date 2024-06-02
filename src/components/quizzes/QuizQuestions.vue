@@ -4,8 +4,9 @@
 
         <!-- Header of question -->
         <div class="col-11 pe-0">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse" :data-bs-target="`#collapse${questionIndex}`">
-                Question {{ questionIndex + 1 }} <span v-if="question.name"> : {{ question.name }}</span>
+            <button class="accordion-button d-flex flex-row" type="button" data-bs-toggle="collapse" :data-bs-target="`#collapse${questionIndex}`">
+                <span class="col-6 col-md-2 col-sm-4">Question {{ questionIndex + 1 }} </span>
+                <span class="col-6 col-md-10 col-sm-8" v-if="question.name">{{ question.name }}</span>
             </button>
         </div>
         <div class="col-1 px-0 d-flex justify-content-around align-items-center">

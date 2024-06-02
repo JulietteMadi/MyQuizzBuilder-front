@@ -1,0 +1,159 @@
+export const demoTopics = [
+    {
+        "name": "Préparer un recrutement inclusif",
+        "id": 1,
+        "guides": [
+            {
+                "name": "La diffusion de l'offre d'emploi",
+                "id": 4,
+                "url": "https://majrh.fr/topics/la-diffusion-de-loffre-demploi/",
+                "image": "Some image"
+            },
+            {
+                "name": "Modèle d'offre d'emploi inclusive",
+                "id": 3,
+                "url": "https://majrh.fr/topics/modele-doffre-demploi-inclusive/",
+                "image": "Some image"
+            },
+            {
+                "name": "La définition du poste",
+                "id": 1,
+                "url": "https://majrh.fr/topics/definition-du-poste/",
+                "image": "Some image"
+            },
+            {
+                "name": "La rédaction de l'offre d'emploi",
+                "id": 2,
+                "url": "https://majrh.fr/topics/la-redaction-de-loffre-demploi/",
+                "image": "Some image"
+            },
+            {
+                "name": "Préparation aux entretiens techniques",
+                "id": 8,
+                "url": "https://majrh.fr/topics/preparation-entretiens-techniques/",
+                "image": "Some image"
+            }
+        ]
+    },
+
+
+
+    //Topic 2
+    {
+        "name": "Processus de recrutement",
+        "id": 2,
+        "guides": [
+            {
+                "name": "La diffusion de l'offre d'emploi",
+                "id": 4,
+                "url": "https://majrh.fr/topics/la-diffusion-de-loffre-demploi/",
+                "image": "Some image"
+            },
+            {
+                "name": "Préparation aux entretiens techniques",
+                "id": 8,
+                "url": "https://majrh.fr/topics/preparation-entretiens-techniques/",
+                "image": "Some image"
+            },
+            {
+                "name": "Préparation de la rencontre",
+                "id": 6,
+                "url": "https://majrh.fr/topics/preparation-de-la-rencontre/",
+                "image": "Some image"
+            },
+            {
+                "name": "Réponse aux candidats",
+                "id": 7,
+                "url": "https://majrh.fr/topics/reponse-aux-candidats-es/",
+                "image": "Some image"
+            },
+            {
+                "name": "Sélection des candidatures",
+                "id": 5,
+                "url": "https://majrh.fr/topics/selection-des-candidatures/",
+                "image": "Some image"
+            }
+        ]
+    },
+
+
+
+
+    // Topic 3
+    {
+        "name": "Intégrer un collaborateur",
+        "id": 3,
+        "guides": [
+            {
+                "name": "Préparer un rapport d'étonnement",
+                "id": 14,
+                "url": "https://majrh.fr/topics/preparer-rapport-etonnement/",
+                "image": "Some image"
+            },
+            {
+                "name": "Préparation à l'arrivée en entreprise",
+                "id": 9,
+                "url": "https://majrh.fr/topics/preparation-arrivee-entreprise/",
+                "image": "Some image"
+            },
+            {
+                "name": "Intégrer à l'équipe",
+                "id": 12,
+                "url": "https://majrh.fr/topics/integrer-equipe/",
+                "image": "Some image"
+            },
+            {
+                "name": "Former à la culture d'entreprise",
+                "id": 11,
+                "url": "https://majrh.fr/topics/former-culture-entreprise/",
+                "image": "Some image"
+            },
+            {
+                "name": "Présenter le poste de travail",
+                "id": 10,
+                "url": "https://majrh.fr/topics/preparer-poste-de-travail/",
+                "image": "Some image"
+            }
+        ]
+    },
+
+
+
+    //Topic 4
+    {
+        "name": "Former ses équipe à l'inclusion",
+        "id": 4,
+        "guides": [
+            {
+                "name": "Former ses managers",
+                "id": 13,
+                "url": "https://majrh.fr/topics/former-manager/",
+                "image": "Some image"
+            },
+            {
+                "name": "Intégrer à l'équipe",
+                "id": 12,
+                "url": "https://majrh.fr/topics/integrer-equipe/",
+                "image": "Some image"
+            },
+            {
+                "name": "Sensibilisation des collaborateurs",
+                "id": 15,
+                "url": "https://majrh.fr/topics/sensibilisation-collaborateurs/",
+                "image": "Some image"
+            },
+            {
+                "name": "Supports de communication pro-inclusion",
+                "id": 16,
+                "url": "https://majrh.fr/topics/supports-communication/",
+                "image": "Some image"
+            },
+            {
+                "name": "Exercices de sensibilisation",
+                "id": 17,
+                "url": "https://majrh.fr/topics/exercices-sensibilisation/",
+                "image": "Some image"
+            }
+        ]
+    }
+]

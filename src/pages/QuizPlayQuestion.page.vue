@@ -1,10 +1,11 @@
 <template>
-    <h1 class="text-center my-5">{{ question.name }}</h1>
-    <div class="row g-3" v-if="finalResultQuestion === null">
-        <div v-for="(answer, index) of question.answers" class="col-12 col-md-6 form-check">
+    <h2 class="text-center mt-5 mx-2 fs-4">Quiz: {{ currentQuiz.name }}</h2>
+    <h3 class="text-center my-5 mx-2 fs-2">{{ question.name }}</h3>
+    <div class="row g-3 d-flex mx-2" v-if="finalResultQuestion === null">
+        <div v-for="(answer, index) of question.answers" class="col-12 col-md-6 p-0 my-2 form-check ">
             <label 
                 :for="`answer${index}`" 
-                class="w-100 form-check-label card card-answer-available p-5 m-2 text-center fs-5"
+                class="form-check-label card card-answer-available p-5 mx-2 text-center fs-5 h-100 d-flex align-items-center justify-content-center"
                 :class="{'card-shadow-selected': answersGiven[index]}">
                     {{ answer.name }}
             </label>
@@ -21,18 +22,21 @@
             Je valide mes réponses
         </button>
     </div>
-    <section v-else class="text-center">
+    <section v-else class="text-center mx-2">
         <h2 v-if="finalResultQuestion" >Bien joué !</h2>
         <h2 v-else >Pas tout à fait...</h2>
         <div class="my-2">
             <i class="bi bi-check-circle-fill text-success"></i> La ou les bonne(s) réponse(s) étai(ent) :
-            <span v-for="(answer, index) in question.answers"><span v-if="answer.valid">{{ answer.name }}</span></span>
+            <span v-for="(answer, index) in listOfGoodAnswers">
+                <span v-if="index != 0"> - </span>
+                <span>{{ answer.name }}</span>
+            </span>
         </div>
         <div class="my-2">
             <i class="bi bi-x-circle-fill text-danger"></i> La ou les mauvaise(s) réponse(s) étai(ent) :
-            <span v-for="(answer, index) in question.answers">
-                <span v-if="!answer.valid">{{ answer.name }}
-                    <span v-if="index < question.answers.length -1"> - </span>
+            <span v-for="(answer, index) in listOfBadAnswers">
+                <span v-if="index != 0"> - </span>
+                <span>{{ answer.name }}
                 </span>
             </span>
         </div>
@@ -69,7 +73,7 @@ export default {
     },
     computed: {
         ...mapState(useQuizStore, ["currentQuiz"]),
-        ...mapWritableState(useQuizStore, ["answersQuizResult"]),
+        ...mapWritableState(useQuizStore, ["currentResultArray"]),
         question(){
             return this.currentQuiz.questions[this.questionIndex];
         },
@@ -79,12 +83,29 @@ export default {
                 if(answer === true) { count++};
             })
             return count;
+        },
+        listOfGoodAnswers(){
+            let listOfGoodAnswers = [];
+            this.question.answers.forEach(answer => {
+                if(answer.valid){
+                    listOfGoodAnswers.push(answer)
+                }
+            })
+            return listOfGoodAnswers;
+        },
+        listOfBadAnswers(){
+            let listOfBadAnswers = [];
+            this.question.answers.forEach(answer => {
+                if(!answer.valid){
+                    listOfBadAnswers.push(answer)
+                }
+            })
+            return listOfBadAnswers;
         }
         
     },
 
     methods:{
-        ...mapActions(useQuizStore, ["resetQuiz"]),
         initAnswersGiven(){
             for(let i=0; i < this.question.answers.length; i++){
                 const tmp = false;
@@ -97,7 +118,7 @@ export default {
                 if(this.answersGiven[i] !== this.question.answers[i].valid){finalResult = false}
             }
             this.finalResultQuestion = finalResult;
-            this.answersQuizResult[this.questionIndex] = finalResult;
+            this.currentResultArray[this.questionIndex] = finalResult;
         },
         resetDataForNextQuestion(){
             this.questionIndex++;
@@ -107,9 +128,9 @@ export default {
         },
         nextQuestion(){
             if( this.questionIndex === this.currentQuiz.questions.length - 1){
-                this.$router.push({ name: 'resultatsQuestion' }) ;
+                this.$router.push({ name: 'quizResults' }) ;
             } else {
-                this.$router.push({ name: 'repondreQuestion', params: { id: this.id, questionIndex: this.questionIndex + 1 } });
+                this.$router.push({ name: 'answerQuestion', params: { id: this.id, questionIndex: this.questionIndex + 1 } });
                 this.resetDataForNextQuestion();
             }
         }

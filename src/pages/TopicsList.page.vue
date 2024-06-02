@@ -35,33 +35,16 @@ import { useUserStore } from '../stores/userStore';
 import { mapState } from 'pinia';
 import TopicItem from '../components/topics/TopicItem.vue';
 import DeleteDialog from '../components/commons/DeleteDialog.vue';
+import { demoTopics } from '../datas/topics';
 
 export default {
     data() {
-        if (import.meta.env.MODE === "demo") {
-            return {
-                allTopics: [
-                    { id: 1, name: "Recrutement" },
-                    { id: 2, name: "Onboarding" },
-                    { id: 3, name: "Sensibilisation" },
-                    { id: 4, name: "RSE en grand groupe" },
-                    { id: 5, name: "Jeunes entrepreneurs" },
-                    { id: 6, name: "Parité en entreprise" },
-                    { id: 7, name: "Formations internes" },
-                    { id: 8, name: "Rédaction de fiche emploi" },
-                    { id: 9, name: "Sélectionner les CV" }
-                ],
-                searchTopic: "",
-                topicToDelete: {}
-            };
-        } else {
-            return {
-                allTopics: [],
-                searchTopic: "",
-                topicToDelete: {},
-                deleteDialogMessage: {}
-            };
-        }
+        return {
+            allTopics: [],
+            searchTopic: "",
+            topicToDelete: {},
+            deleteDialogMessage: {}
+        };
     },
 
 
@@ -84,7 +67,11 @@ export default {
     },
 
     async mounted() {
-        if (import.meta.env.MODE !== "demo") {await this.getAllTopics();}
+        if (import.meta.env.MODE !== "demo") {
+            await this.getAllTopics();
+        } else {
+            this.initDemoDatas();
+        }
 
     },
     methods: {
@@ -97,7 +84,7 @@ export default {
             }
         },
         updateTopic(id, name) {
-            this.$router.push({ name: 'modifierTheme', params: { id: id, name: name } })
+            this.$router.push({ name: 'topicUpdate', params: { id: id, name: name } })
         },
         async getAllTopics() {
             const headers = { 'Authorization': `Bearer ${this.token}` }
@@ -125,6 +112,10 @@ export default {
                 this.$toast.success("toast-app", `Le thème ${this.topicToDelete.name} a bien été supprimé`)
             }
 
+        },
+
+        initDemoDatas(){
+            this.allTopics = demoTopics;
         }
     }
 }

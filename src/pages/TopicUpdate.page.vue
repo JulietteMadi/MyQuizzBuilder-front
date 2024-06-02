@@ -45,7 +45,8 @@ import { useVuelidate } from '@vuelidate/core';
 import { required, maxLength, minLength, helpers } from '@vuelidate/validators';
 import { mapState, mapActions } from 'pinia';
 import { useUserStore } from '../stores/userStore';
-
+import { demoGuides } from '../datas/guides';
+import { demoTopics } from '../datas/topics';
 
 export default {
     setup() {
@@ -56,38 +57,12 @@ export default {
     },
 
     data() {
-        if (import.meta.env.MODE === "demo") {
-            return {
-                id: this.route.params.id,
-                topic: {
-                    name: this.route.params.name,
-                    guides: [
-                        { name: "Savoir quand former un collaborateur", url: "www.majrh.fr/savoir-quand-former", image: "www.temp.fr" },
-                        { name: "Discriminations : les biais en recrutement", url: "www.majrh.fr/discrimination-biais-recrutement", image: "www.temp.fr" }
-                    ]
-                },
-                allGuides: [
-                    { name: "Former les cadres supérieurs", url: "www.majrh.fr/former-cadres-superieurs", image: "www.temp.fr" },
-                    { name: "Savoir quand former un collaborateur", url: "www.majrh.fr/savoir-quand-former", image: "www.temp.fr" },
-                    { name: "Discriminations : les biais en recrutement", url: "www.majrh.fr/discrimination-biais-recrutement", image: "www.temp.fr" },
-                    { name: "Onboarding en 5 étapes", url: "www.majrh.fr/onboarding-5-etapes", image: "www.temp.fr" }
-                ],
-                availableGuides: [
-                    { name: "Former les cadres supérieurs", url: "www.majrh.fr/former-cadres-superieurs", image: "www.temp.fr" },
-                    { name: "Savoir quand former un collaborateur", url: "www.majrh.fr/savoir-quand-former", image: "www.temp.fr" },
-                    { name: "Discriminations : les biais en recrutement", url: "www.majrh.fr/discrimination-biais-recrutement", image: "www.temp.fr" },
-                    { name: "Onboarding en 5 étapes", url: "www.majrh.fr/onboarding-5-etapes", image: "www.temp.fr" }
-                ]
-            }
-        } else {
-            return {
-                id: this.route.params.id,
-                topic: {},
-                allGuides: [],
-                availableGuides: []
-            }
+        return {
+            id: this.route.params.id,
+            topic: {},
+            allGuides: [],
+            availableGuides: []
         }
-
     },
 
     validations() {
@@ -118,7 +93,11 @@ export default {
     },
 
     created() {
-        if (import.meta.env.MODE !== "demo") this.initGuides();
+        if (import.meta.env.MODE !== "demo") {
+            this.initGuides();
+        } else {
+            this.initDemoDatas();
+        }
     },
 
     methods: {
@@ -182,7 +161,6 @@ export default {
 
         async updateTopic() {
             const valid = await this.v$.$validate();
-            console.log(valid)
             if (valid) {
                 if (import.meta.env.MODE !== "demo") {
                     this.guidesFormat();
@@ -190,19 +168,29 @@ export default {
                     const resp = await this.$http.put(`/topics/${this.id}`, this.topic, { headers: headers });
                     if (resp.status === 204 || resp.status === 200) {
                         this.$toast.success("toast-app", `Le guide ${this.topic.name} a bien été modifié`);
-                        this.$router.push({ name: 'themes' });
+                        this.$router.push({ name: 'topics' });
                     } else {
                         this.$toast.error("toast-app", "Les informations de votre thème ne sont pas valides");
                     }
                 } else {
                     this.$toast.success("toast-app", `Le guide ${this.topic.name} a bien été modifié`);
-                    this.$router.push({ name: 'themes' });
+                    this.$router.push({ name: 'topics' });
                 }
             } else {
                 this.$toast.error("toast-app", "Les informations de votre thème ne sont pas valides");
             }
 
+        },
+
+        initDemoDatas(){
+            this.allGuides = demoGuides;
+            this.topic = demoTopics[this.id - 1];
+            this.topic.guides.forEach(el => {
+                el.noUpdate = true;
+            });
+            this.updateAvailableGuides();
         }
+
     }
 }
 </script>

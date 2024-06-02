@@ -77,6 +77,8 @@ import { required, maxLength, minLength, helpers } from '@vuelidate/validators';
 import QuizQuestions from "../components/quizzes/QuizQuestions.vue";
 import DeleteDialog from "../components/commons/DeleteDialog.vue";
 import { moveToNextInArray, moveToPreviousInArray } from "../services/sortService";
+import { demoQuizzes } from "../datas/quizzes";
+import { demoTopics } from "../datas/topics";
 
 
 export default {
@@ -86,39 +88,16 @@ export default {
         }
     },
     data() {
-        if (import.meta.env.MODE === "demo") {
-            return {
-                quiz: {
-                    name: "",
-                    image: "",
-                    questions: []
-                },
-                indexDelete: 0,
-                topics : [
-                    { id: 1, name: "Recrutement" },
-                    { id: 2, name: "Onboarding" },
-                    { id: 3, name: "Sensibilisation" },
-                    { id: 4, name: "RSE en grand groupe" },
-                    { id: 5, name: "Jeunes entrepreneurs" },
-                    { id: 6, name: "Parité en entreprise" },
-                    { id: 7, name: "Formations internes" },
-                    { id: 8, name: "Rédaction de fiche emploi" },
-                    { id: 9, name: "Sélectionner les CV" }
-                ],
-                activeIndex: 0
-            }
-        } else {
-            return {
-                quiz: {
-                    name: "",
-                    image: "",
-                    questions: []
-                },
-                indexDelete: 0,
-                topics : [],
-                activeIndex: 0,
-                deleteDialogMessage: {}
-            }
+        return {
+            quiz: {
+                name: "",
+                image: "",
+                questions: []
+            },
+            indexDelete: 0,
+            topics : [],
+            activeIndex: 0,
+            deleteDialogMessage: {}
         }
     },
 
@@ -155,7 +134,11 @@ export default {
 
     mounted() {
         this.addQuestion();
-        this.getAllTopics();
+        if(import.meta.env.MODE !== "demo") {
+            this.getAllTopics();
+        } else {
+            this.initDemoTopics();
+        }
     },
 
     methods: {
@@ -211,17 +194,28 @@ export default {
             }
         },
         async createQuiz() {
-            this.formatQuestionsAnswersWithIndex();
-            const headers = { 'Authorization': `Bearer ${this.token}` };
-            const resp = await this.$http.post('/quizzes', this.quiz, { headers: headers });
-            if (resp.status == 204 || resp.status == 200) {
+            if(import.meta.env.MODE !== "demo") {
+                this.formatQuestionsAnswersWithIndex();
+                const headers = { 'Authorization': `Bearer ${this.token}` };
+                const resp = await this.$http.post('/quizzes', this.quiz, { headers: headers });
+                if (resp.status == 204 || resp.status == 200) {
+                    this.$toast.success("toast-app", `Le guide ${this.quiz.name} a bien été créé`);
+                    this.$router.push({ name: 'quiz' });
+                } else {
+                    console.error(resp);
+                    this.$toast.error("toast-app", "Un problème est survenu à la création de ce quiz");
+                }
+            } else {
+                this.quiz.id = demoQuizzes.length + 1;
+                demoQuizzes.push(this.quiz);
                 this.$toast.success("toast-app", `Le guide ${this.quiz.name} a bien été créé`);
                 this.$router.push({ name: 'quiz' });
-            } else {
-                console.error(resp);
-                this.$toast.error("toast-app", "Un problème est survenu à la création de ce quiz");
             }
         },
+
+        initDemoTopics(){
+            this.topics = demoTopics;
+        }
     }
 }
 </script>

@@ -41,32 +41,15 @@ import { useUserStore } from "../stores/userStore";
 import { mapState } from "pinia";
 import QuizItem from "../components/quizzes/QuizItem.vue";
 import DeleteDialog from "../components/commons/DeleteDialog.vue";
+import { demoQuizzes } from "../datas/quizzes";
 
 export default {
     data() {
-        if (import.meta.env.MODE === "demo") {
-            return {
-                quizzes: [
-                    { id: 1, name: "Sensibilisation pour les recruteurs" },
-                    { id: 2, name: "Quiz de la journée contre la discrimination" },
-                    { id: 3, name: "Sensibilisation pour les artisants" },
-                    { id: 4, name: "RSE en grand groupe" },
-                    { id: 5, name: "Salon des entreprises" },
-                    { id: 6, name: "Quiz pôle emploi" },
-                    { id: 7, name: "Sensibilisation CEO - long" },
-                    { id: 8, name: "Sensibilisation CEO - court" },
-                    { id: 9, name: "Quiz intégration collaborateur" }
-                ],
-                searchQuiz: "",
-                quizToDelete: {}
-            }
-        } else {
-            return {
-                quizzes: [],
-                searchQuiz: "",
-                quizToDelete: {},
-                deleteDialogMessage: {}
-            }
+        return {
+            quizzes: [],
+            searchQuiz: "",
+            quizToDelete: {},
+            deleteDialogMessage: {}
         }
     },
 
@@ -76,7 +59,11 @@ export default {
     },
 
     mounted(){
-        if (import.meta.env.MODE !== "demo") this.getAllQuizzes();
+        if (import.meta.env.MODE !== "demo") {
+            this.getAllQuizzes();
+        } else {
+            this.initDemoDatas();
+        }
     },
 
     computed: {
@@ -95,9 +82,6 @@ export default {
     },
 
     methods: {
-        updateQuiz(id){
-            this.$router.push({name: 'modifierQuiz', params: {id: id} });
-        },
         askDeleteQuiz(index){
             this.quizToDelete = this.quizzes.find(quiz => quiz.id === index);
             this.deleteDialogMessage = {
@@ -107,7 +91,7 @@ export default {
             }
         },
         shareQuiz(id){
-            const routeUrl = this.$router.resolve({ name: 'jouerQuiz', params: { id: id} }).href;
+            const routeUrl = this.$router.resolve({ name: 'quizStartPlay', params: { id: id} }).href;
             window.open(routeUrl, '_blank');
         },
         async getAllQuizzes(){
@@ -136,6 +120,9 @@ export default {
                 this.$toast.success("toast-app", `Le quiz ${this.quizToDelete.name} a bien été supprimé`)
             }
 
+        },
+        initDemoDatas(){
+            this.quizzes = demoQuizzes;
         }
     }
 }

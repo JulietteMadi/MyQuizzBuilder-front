@@ -67,6 +67,8 @@ import { useUserStore } from '../stores/userStore';
 import QuizQuestions from "../components/quizzes/QuizQuestions.vue";
 import DeleteDialog from '../components/commons/DeleteDialog.vue';
 import { moveToNextInArray, moveToPreviousInArray } from "../services/sortService";
+import { demoQuizzes } from '../datas/quizzes';
+import { demoTopics } from '../datas/topics';
 
 export default {
     setup(){
@@ -89,8 +91,12 @@ export default {
     },
 
     async mounted(){
-        this.initQuiz();
-        this.getAllTopics();
+        if(import.meta.env.MODE !== "demo") {
+            this.initQuiz();
+            this.getAllTopics();
+        } else {
+            this.initDemoDatas();
+        }
     },
 
     computed: {
@@ -161,16 +167,27 @@ export default {
             }
         },
         async updateQuiz(){
-            this.formatQuestionsAnswersWithIndex();
-            const headers = { 'Authorization': `Bearer ${this.token}` };
-            const resp = await this.$http.put(`/quizzes/${this.id}`, this.quiz, { headers: headers });
-            if (resp.status == 204 || resp.status == 200) {
-                this.$toast.success("toast-app", `Le guide ${this.quiz.name} a bien été modifié`);
-                this.$router.push({ name: 'quiz' });
+            if(import.meta.env.MODE !== "demo") {
+                this.formatQuestionsAnswersWithIndex();
+                const headers = { 'Authorization': `Bearer ${this.token}` };
+                const resp = await this.$http.put(`/quizzes/${this.id}`, this.quiz, { headers: headers });
+                if (resp.status == 204 || resp.status == 200) {
+                    this.$toast.success("toast-app", `Le quiz ${this.quiz.name} a bien été modifié`);
+                    this.$router.push({ name: 'quiz' });
+                } else {
+                    console.error(resp);
+                    this.$toast.error("toast-app", "Un problème est survenu à la modification de ce quiz");
+                }
             } else {
-                console.error(resp);
-                this.$toast.error("toast-app", "Un problème est survenu à la modification de ce quiz");
+                this.$toast.success("toast-app", `Le quiz ${this.quiz.name} a bien été modifié`);
+                this.$router.push({ name: 'quiz' });
             }
+            
+        },
+
+        initDemoDatas(){
+            this.quiz = demoQuizzes[this.id - 1];
+            this.topics = demoTopics;
         }
     }
 }

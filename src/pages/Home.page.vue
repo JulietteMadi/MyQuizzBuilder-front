@@ -132,40 +132,23 @@
 <script>
 import { RouterLink } from "vue-router";
 import { useUserStore } from '../stores/userStore';
-import { mapState } from 'pinia';
+import { mapActions, mapState } from 'pinia';
 import QuizItem from "../components/quizzes/QuizItem.vue";
 import TopicItem from "../components/topics/TopicItem.vue";
 import DeleteDialog from "../components/commons/DeleteDialog.vue";
+import { demoQuizzes } from "../datas/quizzes.js";
+import { demoTopics } from "../datas/topics.js"
 
 export default {
     data() {
-        if (import.meta.env.MODE === "demo") {
-            return {
-                lastQuizzes: [
-                    { id: 1, name: "Recrutement" },
-                    { id: 2, name: "Onboarding" },
-                    { id: 3, name: "Sensibilisation" },
-                    { id: 4, name: "RSE en grand groupe" }
-                ],
-                lastTopics: [
-                    { id: 1, name: "RH" },
-                    { id: 2, name: "Administratif" },
-                    { id: 3, name: "Travailleurs étrangers" },
-                    { id: 4, name: "Inclusion managériale" }
-                ],
-                disclaimer: true,
-                topicToDelete: {}
-            }
-        } else {
-            return {
-                lastQuizzes: [],
-                lastTopics: [],
-                disclaimer: false,
-                topicToDelete: {},
-                deleteDialogMessage: {},
-                managerItems: {}
-            };
-        }
+        return {
+            lastQuizzes: [],
+            lastTopics: [],
+            disclaimer: false,
+            topicToDelete: {},
+            deleteDialogMessage: {},
+            managerItems: {}
+        };
     },
     components: {
         QuizItem,
@@ -178,6 +161,8 @@ export default {
             this.getAllTopics();
             this.getAllQuizzes();
             this.getManagerItems();
+        } else {
+            this.initDemoDatas();
         }
     },
 
@@ -186,6 +171,7 @@ export default {
     },
 
     methods: {
+        ...mapActions(useUserStore, ["resetUser"]),
         reduceArrayLength(array) {
             array.splice(0, array.length - 4);
             array.reverse();
@@ -201,7 +187,7 @@ export default {
             }
         },
         updateTopic(id, name) {
-            this.$router.push({ name: 'modifierTheme', params: { id: id, name: name } });
+            this.$router.push({ name: 'topicUpdate', params: { id: id, name: name } });
         },
         askDeleteQuiz(index){
             this.quizToDelete = this.lastQuizzes.find(quiz => quiz.id === index);
@@ -211,14 +197,6 @@ export default {
                 body: "Cette action est irréversible, et vous supprimerez définitivement le quiz: " + this.quizToDelete.name,
                 type: "quiz"
             }
-        },
-        updateQuiz(id){
-            this.$router.push({name: 'modifierQuiz', params: {id: id} });
-        },
-
-        shareQuiz(id){
-            const routeUrl = this.$router.resolve({ name: 'jouerQuiz', params: { id: id} }).href;
-            window.open(routeUrl, '_blank');
         },
 
         deleteItem(id){
@@ -231,10 +209,19 @@ export default {
 
         async getAllTopics() {
             const headers = { 'Authorization': `Bearer ${this.token}` }
-            const resp = await this.$http.get('/topics', { headers: headers });
-            if (resp.status == 200 || resp.status == 204) {
-                this.lastTopics = resp.body;
-                if (this.lastTopics.length > 3) this.reduceArrayLength(this.lastTopics);
+            try {
+                const resp = await this.$http.get('/topics', { headers: headers });
+                if (resp.status == 200 || resp.status == 204) {
+                    this.lastTopics = resp.body;
+                    if (this.lastTopics.length > 3) this.reduceArrayLength(this.lastTopics);
+                } else {
+                    console.log("status: ", resp.status);
+                }
+            } catch (error){
+                console.log(error.response.status === 401);
+                if(error.response.status === 401){
+
+                }
             }
         },
         async getAllQuizzes(){
@@ -293,6 +280,18 @@ export default {
                 this.$toast.success("toast-app", `Le quiz ${this.quizToDelete.name} a bien été supprimé`);
             }
 
+        },
+
+        initDemoDatas(){
+            this.managerItems = {
+                "quizIds": [1, 2, 4],
+                "topicIds": [2, 3]
+            };
+            this.lastQuizzes = demoQuizzes;
+            this.lastTopics = demoTopics;
+            if(this.lastQuizzes.length > 3) this.reduceArrayLength(this.lastQuizzes);
+            if(this.lastTopics.length > 3) this.reduceArrayLength(this.lastTopics);
+            this.disclaimer = true;
         }
     }
 }

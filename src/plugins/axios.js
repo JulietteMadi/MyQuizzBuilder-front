@@ -1,4 +1,3 @@
-
 import axios from 'axios';
 
 const ACCEPTED_STATUS = [200, 201, 202, 204, 400];

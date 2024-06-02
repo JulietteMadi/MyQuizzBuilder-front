@@ -1,10 +1,42 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { useUserStore } from "../stores/userStore.js"
 
+const routeWithoutAuth = ["signIn", "createAccount", "quizStartPlay", "answerQuestion", "quizResults"];
+
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
-
+            // Quiz routes
+            {
+                path: '/quiz',
+                name: 'quiz',
+                component: () => import('../pages/QuizList.page.vue')
+            },
+            {
+                path: '/creer-quiz',
+                name: 'quizCreate',
+                component: () => import('../pages/QuizCreate.page.vue')
+            },
+            {
+                path: '/quiz/modifier/:id',
+                name: 'quizUpdate',
+                component:() => import('../pages/QuizUpdate.page.vue')
+            },
+            {
+                path: '/quiz/:id/bienvenue',
+                name: 'quizStartPlay',
+                component:() => import('../pages/QuizPlayWelcome.page.vue')
+            },
+            {
+                path: '/quiz/:id/:questionIndex',
+                name: 'answerQuestion',
+                component:() => import('../pages/QuizPlayQuestion.page.vue')
+            },
+            {
+                path: '/quiz/resultats',
+                name: 'quizResults',
+                component:() => import('../pages/QuizPlayResult.page.vue')
+            },
         // Main and commons routes
         {
             path: '/',
@@ -26,58 +58,26 @@ const router = createRouter({
         // Topic routes
         {
             path: '/themes',
-            name: 'themes',
+            name: 'topics',
             component: () => import('../pages/TopicsList.page.vue')
         },
         {
             path: '/creer-theme',
-            name: 'creerTheme',
+            name: 'topicCreate',
             component: () => import('../pages/TopicCreate.page.vue')
         },
         {
             path: '/theme/modifier/:id/:name',
-            name: 'modifierTheme',
+            name: 'topicUpdate',
             component: () => import('../pages/TopicUpdate.page.vue')
-        },
-
-
-        // Quiz routes
-        {
-            path: '/quiz',
-            name: 'quiz',
-            component: () => import('../pages/QuizList.page.vue')
-        },
-        {
-            path: '/creer-quiz',
-            name: 'creerQuiz',
-            component: () => import('../pages/QuizCreate.page.vue')
-        },
-        {
-            path: '/quiz/modifier/:id',
-            name: 'modifierQuiz',
-            component:() => import('../pages/QuizUpdate.page.vue')
-        },
-        {
-            path: '/quiz/:id/bienvenue',
-            name: 'jouerQuiz',
-            component:() => import('../pages/QuizPlayWelcome.page.vue')
-        },
-        {
-            path: '/quiz/:id/:questionIndex',
-            name: 'repondreQuestion',
-            component:() => import('../pages/QuizPlayQuestion.page.vue')
-        },
-        {
-            path: '/quiz/resultats',
-            name: 'resultatsQuestion',
-            component:() => import('../pages/QuizPlayResult.page.vue')
         }
     ]
 })
 
 router.beforeEach((to) => {
     const userStore = useUserStore();
-    if (userStore.token === '' && to.name !== "signIn" && to.name !== "createAccount" && to.name !== "jouerQuiz" && to.name !== "repondreQuestion" && to.name !== "resultatsQuestion") {
+    // userStore.tokenValidate();
+    if (userStore.token === '' && !routeWithoutAuth.includes(to.name)) {
         return { name: 'signIn' }
     }
 })

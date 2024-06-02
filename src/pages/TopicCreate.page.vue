@@ -44,6 +44,7 @@ import { useVuelidate } from '@vuelidate/core';
 import { required, maxLength, minLength, helpers } from '@vuelidate/validators';
 import { useUserStore } from '../stores/userStore';
 import { mapState } from 'pinia';
+import { demoGuides } from '../datas/guides.js';
 
 export default {
     setup() {
@@ -52,27 +53,7 @@ export default {
         }
     },
     data() {
-        if (import.meta.env.MODE === "demo") {
-            return {
-                topic: {
-                    name: "",
-                    guides: []
-                },
-                allGuides: [
-                    { name: "Former les cadres supérieurs", url: "www.majrh.fr/former-cadres-superieurs", image: "www.temp.fr" },
-                    { name: "Savoir quand former un collaborateur", url: "www.majrh.fr/savoir-quand-former", image: "www.temp.fr" },
-                    { name: "Discriminations : les biais en recrutement", url: "www.majrh.fr/discrimination-biais-recrutement", image: "www.temp.fr" },
-                    { name: "Onboarding en 5 étapes", url: "www.majrh.fr/onboarding-5-etapes", image: "www.temp.fr" }
-                ],
-                availableGuides: [
-                    { name: "Former les cadres supérieurs", url: "www.majrh.fr/former-cadres-superieurs", image: "www.temp.fr" },
-                    { name: "Savoir quand former un collaborateur", url: "www.majrh.fr/savoir-quand-former", image: "www.temp.fr" },
-                    { name: "Discriminations : les biais en recrutement", url: "www.majrh.fr/discrimination-biais-recrutement", image: "www.temp.fr" },
-                    { name: "Onboarding en 5 étapes", url: "www.majrh.fr/onboarding-5-etapes", image: "www.temp.fr" }
-                ]
-            }
-        } else {
-            return {
+        return {
                 topic: {
                     name: "",
                     guides: []
@@ -80,8 +61,6 @@ export default {
                 allGuides: [],
                 availableGuides: []
             }
-        }
-
     },
 
     validations() {
@@ -113,7 +92,11 @@ export default {
     },
 
     created() {
-        if (import.meta.env.MODE !== "demo") this.initGuides();
+        if (import.meta.env.MODE !== "demo") {
+            this.initGuides();
+        } else {
+            this.initDemoGuides();
+        }
         this.addGuide();
     },
 
@@ -153,19 +136,21 @@ export default {
         },
         async createTopic() {
             const valid = await this.v$.$validate();
-            console.log(this.topic)
-            if (valid) {
+            if (valid && import.meta.env.MODE !== "demo") {
                     this.guidesFormat();
                     const headers = { 'Authorization': `Bearer ${this.token}` }
                     const resp = await this.$http.post('/topics', this.topic, { headers: headers });
                     if (resp.status == 204 || resp.status == 200) {
-                        this.$toast.success("toast-app", `Le guide ${this.topic.name} a bien été créé`);
-                        this.$router.push({ name: 'themes' });
+                        this.$toast.success("toast-app", `Le thème ${this.topic.name} a bien été créé`);
+                        this.$router.push({ name: 'topics' });
                     } else {
                         console.error(resp);
                         this.$toast.error("toast-app", "Un problème est survenu à la création de ce thème");
                     }
                 
+            } else if (valid) {
+                this.$toast.success("toast-app", `Le thème ${this.topic.name} a bien été créé`);
+                this.$router.push({ name: 'topics' });
             } else {
                 this.$toast.error("toast-app", "Les informations de votre thème ne sont pas valides");
             }
@@ -179,6 +164,11 @@ export default {
             } else {
                 console.error(resp);
             }
+        },
+        initDemoGuides(){
+            this.guides = demoGuides;
+            this.availableGuides = demoGuides;
+            console.log("guides: ", this.availableGuides);
         }
     }
 }
