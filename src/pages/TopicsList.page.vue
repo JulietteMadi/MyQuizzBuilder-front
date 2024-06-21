@@ -21,10 +21,19 @@
                 v-model="searchTopic">
         </div>
     </div>
+
     <!-- TopicList -->
-    <div class="row my-5 mx-auto text-center">
+    <div v-if="loading" class="mt-5 pt-5">
+        <div class="spinner-border spin-color" role="status"></div>
+    </div>
+    <div v-else class="row my-5 mx-auto text-center">
         <div class=" col-12 col-sm-6 col-md-4 col-lg-3 py-3" v-for="(topic, index) in filteredTopics" :key="topic.id">
             <TopicItem :topic="topic" :index="index.toString()" @deleteTopic="askDeleteTopic" @updateTopic="updateTopic" />
+        </div>
+        <div v-if="filteredTopics.length === 0">
+            <h2>On dirait que votre recherche est partie au galop...</h2>
+            <p>Aucun thème n'a été trouvé dans notre écurie !</p>
+            <img src="../assets/mqb-poney.png" alt="Poney de réconfort">
         </div>
     </div>
 </template>
@@ -43,7 +52,8 @@ export default {
             allTopics: [],
             searchTopic: "",
             topicToDelete: {},
-            deleteDialogMessage: {}
+            deleteDialogMessage: {},
+            loading: false
         };
     },
 
@@ -97,8 +107,10 @@ export default {
         },
         async deleteTopic(id) {
             if (import.meta.env.MODE !== "demo") {
+                this.loading = true;
                 const headers = { 'Authorization': `Bearer ${this.token}` }
                 const resp = await this.$http.delete(`/topics/${id}`, { headers: headers });
+                this.loading = false;
                 if (resp.status === 204 || resp.status === 200) {
                     await this.getAllTopics();
                     this.$toast.success("toast-app", `Le thème ${this.topicToDelete.name} a bien été supprimé`);

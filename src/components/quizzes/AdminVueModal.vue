@@ -42,7 +42,7 @@
                         <div class="mx-3" v-for="(question, index) in quiz.questions">
                             <div v-if="checkedTopics.length === 0 || checkedTopics.includes(question.topicId)">
                                 <span class="fw-semibold">{{ index + 1 }} - {{ question.name }}</span>
-                                <p class="m-0">Thème: {{ question.topicId }}</p>
+                                <p class="m-0">Thème: {{ getTopicName(question.topicId) }}</p>
                                 <div v-for="answer in question.answers">
                                     <i v-if="answer.valid" class="bi bi-check-circle text-success"></i>
                                     <i v-else class="bi bi-x-circle text-danger"></i>
@@ -128,6 +128,11 @@ export default {
     },
 
     methods:{
+
+        getTopicName(topicId) {
+            const topic = this.topics.find(t => t.id === topicId);
+            return topic ? topic.name : 'Unknown';
+        },
         async initQuiz(){
             const headers = { 'Authorization': `Bearer ${this.token}` };
             const resp = await this.$http.get(`/quizzes/${this.quizId}`,  { headers: headers });

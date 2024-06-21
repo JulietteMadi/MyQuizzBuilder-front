@@ -4,7 +4,7 @@
         <div class="outlined my-4 p-4">
             <div class="row">
                 <div class="col-12">
-                    <label for="name" class="fs-5">Nom du thème</label>
+                    <label for="name" class="fs-5 required-label">Nom du thème</label>
                     <input name="name" id="name" type="text" class="form-control" placeholder="Ex : recrutement"
                         v-model="topic.name" :class="{ 'is-invalid': v$.topic.name.$error }">
                     <p v-if="v$.topic.name.$error" class="text-danger">{{ v$.topic.name.$errors[0].$message }}</p>
@@ -18,8 +18,14 @@
             <!-- List of guides -->
             <p v-if="v$.topic.guides.$error" class="text-danger">{{ v$.topic.guides.$errors[0].$message }}</p>
             <div class="row py-3 my-5 d-flex" v-for="(guide, index) in topic.guides" :key="index">
-                <GuideItem :index="index" :guide="guide" :availableGuides="availableGuides" :allGuides="allGuides"
-                    @deleteGuide="deleteGuide" @updateGuidesList="updateAvailableGuides" />
+                <GuideItem 
+                    :index="index" 
+                    :guide="guide" 
+                    :availableGuides="availableGuides" 
+                    :allGuides="allGuides"
+                    @deleteGuide="deleteGuide" 
+                    @updateGuidesList="updateAvailableGuides" 
+                />
             </div>
 
             <!-- Add a guide -->

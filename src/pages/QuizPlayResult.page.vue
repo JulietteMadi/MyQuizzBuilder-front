@@ -1,8 +1,12 @@
 <template>
-    <section class="text-center">
+    <section v-if="loading" class="text-center mt-5 pt-5">
+        <div class="spinner-border spin-color" role="status">
+        </div>
+    </section>
+    <section v-else class="text-center">
         <h1 class="m-5 px-5">Félicitations, vous avez obtenu un score de {{ score }}% de bonnes réponses !</h1>
         <p>Vous avez été particulièrement à l’aise sur le thème Culture générale. 
-            En revanche vous avez été moins performant sur le thème {{ lastQuizTopicsResults.topicWithBadScore.name }} ...
+        En revanche vous avez été moins performant sur le thème {{ lastQuizTopicsResults.topicWithBadScore.name }} ...
         N'hésitez pas à consulter nos fiches pratiques pour en savoir plus sur ce sujet !</p>
         <h2 class="py-3">En savoir plus sur le thème {{ lastQuizTopicsResults.topicWithBadScore.name }} :</h2>
         <div class="row mb-5">
@@ -28,6 +32,7 @@ export default {
     data(){
         return {
             score : 0,
+            loading: false
         }
     },
     components: {
@@ -74,10 +79,13 @@ export default {
     methods: {
         ...mapActions(useQuizStore,["resetQuiz"]),
         async initResultsQuiz(){
+            this.loading = true;
             const quizId = Object.keys(this.currentQuiz).length === 0 
                 ? this.lastPlayedQuiz.id 
                 : this.currentQuiz.id;
+            console.log(Object.values(this.currentQuiz));
             const resp = await this.$http.post(`/quizzes/${quizId}/play-quiz`, this.payload);
+            this.loading = false;
             if(resp.status === 204 || resp.status === 200){
                 this.score = resp.body.percentage;
                 this.resetQuiz(resp.body.topicId);
@@ -106,3 +114,8 @@ export default {
     }
 }
 </script>
+<style>
+.spin-color{
+    color: var(--main-blue-color);
+}
+</style>

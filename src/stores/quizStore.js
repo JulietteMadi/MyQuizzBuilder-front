@@ -30,9 +30,9 @@ export const useQuizStore = defineStore('quizzes', {
                 this.buildTopicsListById(topicId);
                 this.lastQuizResultsArray = [...this.currentResultArray];
             };
-            this.currentQuiz = {}
-            this.topicsOfCurrentQuiz = [],
-            this.currentResultArray = []
+            this.currentQuiz = {};
+            this.topicsOfCurrentQuiz = [];
+            this.currentResultArray = [];
         },
 
         buildTopicsListById(topicId){

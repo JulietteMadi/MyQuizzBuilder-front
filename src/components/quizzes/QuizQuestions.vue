@@ -9,7 +9,7 @@
                 <span class="col-6 col-md-10 col-sm-8" v-if="question.name">{{ question.name }}</span>
             </button>
         </div>
-        <div class="col-1 px-0 d-flex justify-content-around align-items-center">
+        <div class="col-1 px-0 d-flex justify-content-evenly align-items-center">
                 <div class="d-flex flex-column">
                     <button class="btn btn-outline-light p-0" type="button"  
                     @click="$emit('moveQuestionUp', questionIndex)"
@@ -53,7 +53,7 @@
         <div class="accordion-body">
             <div class="row">
                 <div class="col-12">
-                    <label :for="`questionName${questionIndex}`" class="fs-6">Question</label>
+                    <label :for="`questionName${questionIndex}`" class="fs-6 required-label">Question</label>
                     <input :name="`questionName${questionIndex}`" :id="`questionName${questionIndex}`" v-model="question.name" type="text" class="form-control mb-2">
                     <p v-if="v$.question.name.$error" 
                         class="text-danger">
@@ -63,7 +63,7 @@
             </div>
             <div class="row">
                 <div class="col-12">
-                    <label :for="`questionTopic${questionIndex}`">
+                    <label :for="`questionTopic${questionIndex}`" class="required-label">
                         Choisissez le thème de votre question :
                     </label>
                     <select class="form-select" :id="`questionTopic${questionIndex}`" :name="`questionTopic${questionIndex}`"
@@ -99,13 +99,14 @@
             </div>
             <div>
                 <label :for="`answerDescription${questionIndex}`" class="form-label mt-5">
-                    <h3>Description de la ou les bonne(s) réponse(s)</h3>
+                    <h3 class="required-label">Description de la ou les bonne(s) réponse(s)</h3>
                 </label>
                 <textarea 
                     v-model="question.answerDescription"
                     :id="`answerDescription${questionIndex}`" 
                     :name="`answerDescription${questionIndex}`"
                     class="form-control"
+                    placeholder="Ecrivez ici l'explication de la ou les bonnes réponses. C'est une information que l'utilisateur verra juste après avoir répondu à la question"
                     rows="5">
                 </textarea>
                 <p v-if="v$.question.answerDescription.$error" 

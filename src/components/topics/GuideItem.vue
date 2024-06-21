@@ -40,7 +40,7 @@
 
     <!-- Inputs to use an old guide -->
     <div class="col-12 col-md-11" v-if="oldGuide">
-        <label :for="`chosenGuideName${index}`" class="form-label required col-12">Nom de la fiche</label>
+        <label :for="`chosenGuideName${index}`" class="form-label required col-12 required-label">Nom de la fiche</label>
         <select v-if="!guide.url" 
             :id="`chosenGuideName${index}`" 
             v-model="chosenGuideName"
@@ -89,7 +89,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-12 col-md-8 px-0 pe-md-3">
-                    <label :for="`guideUrl${index}`">Lien vers la fiche</label>
+                    <label :for="`guideUrl${index}`" class="required-label">Lien vers la fiche</label>
                     <input :id="`guideUrl${index}`" 
                         v-model="guide.url" 
                         :name="`guideUrl${index}`"  
@@ -99,7 +99,7 @@
                     >
                 </div>
                 <div class="col-12 col-md-4 px-0">
-                    <label :for="`guideImage${index}`">Lien vers l'image d'illustration</label>
+                    <label :for="`guideImage${index}`" class="required-label">Lien vers l'image d'illustration</label>
                     <input :id="`guideImage${index}`" 
                         v-model="guide.image" 
                         :disabled="!updateGuide" 
@@ -113,7 +113,7 @@
 
     <!-- Inputs to create a new guide -->
     <div class="col-12 col-md-11" v-else>
-        <label :for="`guideName${index}`" class="fs-6">Nom de la fiche</label>
+        <label :for="`guideName${index}`" class="fs-6 required-label">Nom de la fiche</label>
         <input :id="`guideName${index}`"
             v-model="guide.name"
             :name="`guideName${index}`"   
@@ -127,7 +127,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-12 col-md-8 px-0 pe-md-3">
-                    <label :for="`guideUrl${index}`">
+                    <label :for="`guideUrl${index}`" class="required-label">
                         Lien vers la fiche
                     </label>
                     <input :id="`guideUrl${index}`"
@@ -142,7 +142,7 @@
                     </p>
                 </div>
                 <div class="col-12 col-md-4 px-0">
-                    <label :for="`guideImage${index}`">
+                    <label :for="`guideImage${index}`" class="required-label">
                         Lien vers l'image d'illustration
                     </label>
                     <input :id="`guideImage${index}`" 

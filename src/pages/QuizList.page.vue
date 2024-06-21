@@ -23,7 +23,10 @@
     </div>
 
     <!-- QuizList -->
-    <div class="row my-5 mx-auto text-center">
+    <div v-if="loading" class="mt-5 pt-5">
+        <div class="spinner-border spin-color" role="status"></div>
+    </div>
+    <div v-else class="row my-5 mx-auto text-center">
         <div class=" col-12 col-sm-6 col-md-4 col-lg-3 py-3" v-for="(quiz, index) in filteredQuiz">
             <QuizItem 
                 :quiz="quiz" 
@@ -31,6 +34,11 @@
                 @deleteQuiz="askDeleteQuiz" 
                 @updateQuiz="updateQuiz"
                 @shareQuiz="shareQuiz"/>
+        </div>
+        <div v-if="filteredQuiz.length === 0">
+            <h2>Non d'une coccinelle !</h2>
+            <p>Vous n'avez pas de quiz correspondant à votre recherche ...</p>
+            <img src="../assets/mqb-coccinelle.png" alt="Coccinelle de réconfort">
         </div>
     </div>
 </template>
@@ -49,7 +57,8 @@ export default {
             quizzes: [],
             searchQuiz: "",
             quizToDelete: {},
-            deleteDialogMessage: {}
+            deleteDialogMessage: {},
+            loading: false
         }
     },
 
@@ -105,8 +114,10 @@ export default {
         },
         async deleteQuiz(id) {
             if (import.meta.env.MODE !== "demo") {
+                this.loading = true;
                 const headers = { 'Authorization': `Bearer ${this.token}` }
                 const resp = await this.$http.delete(`/quizzes/${id}`, { headers: headers });
+                this.loading = false;
                 if (resp.status === 204 || resp.status === 200) {
                     await this.getAllQuizzes();
                     this.$toast.success("toast-app", `Le quiz ${this.quizToDelete.name} a bien été supprimé`);

@@ -117,3 +117,8 @@ p {
     cursor: pointer;
     color: var(--main-dark-color);
 }
+
+.required-label::after {
+    content: " *";
+    color: var(--main-red-color);
+}

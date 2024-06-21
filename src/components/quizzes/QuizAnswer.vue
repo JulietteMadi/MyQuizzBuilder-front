@@ -1,5 +1,5 @@
 <template>
-    <label :for="`answer${index}`">
+    <label :for="`answer${index}`" class="required-label">
         Réponse {{ answerIndex + 1 }}
     </label>
     <div class="row mb-2">

@@ -37,9 +37,12 @@
         <!-- My profile -->
         <section class="my-5">
             <h2>Mon profil</h2>
-            <div class="row">
+            <div v-if="userLoading" class="text-center my-5">
+                <div class="spinner-border spin-color" role="status"></div>
+            </div>
+            <div v-else class="row">
                 <div class="col-12 col-sm-6 col-lg-3">
-                    <div class="card shadow my-2">
+                    <div class="card shadow item-height my-2">
                         <div class="card-body d-flex flex-column">
                             <i class="bi bi-person-fill fs-1 mx-auto icon-color"></i>
                             <p class="text-center">
@@ -50,7 +53,7 @@
                     </div>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-3">
-                    <div class="card shadow my-2">
+                    <div class="card shadow item-height my-2">
                         <div class="card-body d-flex flex-column">
                             <i class="bi bi-envelope-fill fs-1 mx-auto icon-color"></i>
                             <p class="text-center">
@@ -61,7 +64,7 @@
                     </div>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-3">
-                    <div class="card shadow h-100 my-2">
+                    <div class="card shadow item-height my-2">
                         <div class="card-body d-flex mx-auto">
                             <div class="align-self-center">
                                 <h2 class="text-center" v-if="managerItems.quizIds">{{ managerItems.quizIds.length }}</h2>
@@ -73,7 +76,7 @@
                     </div>
                 </div>
                 <div class="col-12 col-sm-6 col-lg-3">
-                    <div class="card shadow h-100 my-2">
+                    <div class="card shadow item-height my-2">
                         <div class="card-body d-flex mx-auto">
                             <div class="align-self-center">
                                 <h2 class="text-center" v-if="managerItems.topicIds">{{ managerItems.topicIds.length }}</h2>
@@ -89,7 +92,10 @@
 
         <!-- My favourite quiz -->
         <h2>Mes derniers quiz</h2>
-        <div class="text-center">
+        <div v-if="quizLoading" class="text-center my-5">
+            <div class="spinner-border spin-color" role="status"></div>
+        </div>
+        <div v-else class="text-center">
             <div class="row g-3">
                 <div class=" col-12 col-sm-6 col-lg-3" v-for="(quiz, index) in lastQuizzes">
                     <QuizItem 
@@ -112,6 +118,9 @@
     <!-- My favorite Topics -->
     <section class="my-5">
         <h2>Mes derniers thèmes</h2>
+        <div v-if="topicLoading" class="text-center my-5">
+            <div class="spinner-border spin-color" role="status"></div>
+        </div>
         <div class="text-center">
             <div class="row g-3">
                 <div class="col-12 col-sm-6 col-lg-3" v-for="(topic, index) in lastTopics">
@@ -147,7 +156,10 @@ export default {
             disclaimer: false,
             topicToDelete: {},
             deleteDialogMessage: {},
-            managerItems: {}
+            managerItems: {},
+            userLoading: false,
+            quizLoading : false,
+            topicLoading: false
         };
     },
     components: {
@@ -208,25 +220,22 @@ export default {
         },
 
         async getAllTopics() {
+            this.topicLoading = true;
             const headers = { 'Authorization': `Bearer ${this.token}` }
-            try {
-                const resp = await this.$http.get('/topics', { headers: headers });
-                if (resp.status == 200 || resp.status == 204) {
-                    this.lastTopics = resp.body;
-                    if (this.lastTopics.length > 3) this.reduceArrayLength(this.lastTopics);
-                } else {
-                    console.log("status: ", resp.status);
-                }
-            } catch (error){
-                console.log(error.response.status === 401);
-                if(error.response.status === 401){
-
-                }
+            const resp = await this.$http.get('/topics', { headers: headers });
+            this.topicLoading = false;
+            if (resp.status == 200 || resp.status == 204) {
+                this.lastTopics = resp.body;
+                if (this.lastTopics.length > 3) this.reduceArrayLength(this.lastTopics);
+            } else {
+                console.log("status: ", resp.status);
             }
         },
         async getAllQuizzes(){
+            this.quizLoading = true;
             const headers = { 'Authorization': `Bearer ${this.token}` };
             const resp = await this.$http.get('/quizzes', {headers: headers});
+            this.quizLoading = false;
             if(resp.status == 200 || resp.status == 204) {
                 this.lastQuizzes = resp.body;
                 if(this.lastTopics.length > 3) this.reduceArrayLength(this.lastQuizzes);
@@ -235,8 +244,10 @@ export default {
             }
         },
         async getManagerItems(){
+            this.userLoading = true;
             const headers = { 'Authorization': `Bearer ${this.token}` };
             const resp = await this.$http.get("/items", {headers: headers});
+            this.userLoading = false;
             if(resp.status == 200 || resp.status == 204) {
                 this.managerItems.quizIds = resp.body.quizIds;
                 this.managerItems.topicIds = resp.body.topicIds;
@@ -300,5 +311,21 @@ export default {
 <style>
 .icon-color{
     color: var(--main-red-color);
+}
+
+@media (max-width: 576px) {
+    .item-height {
+        height: 100vh;
+    }
+}
+
+@media (max-width: 768px) {
+    .item-height {
+        height: 50vh;
+    }
+}
+
+.item-height {
+    height: 25vh; 
 }
 </style>

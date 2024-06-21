@@ -6,7 +6,7 @@
             <!-- Form header -->
             <div clas="row">
                 <div class="col-12 col-md-8">
-                    <label for="name" class="fs-5 mt-2">Nom du Quiz</label>
+                    <label for="name" class="fs-5 mt-2 required-label">Nom du Quiz</label>
                     <input v-model="quiz.name"
                         id="name"
                         name="name" 
@@ -16,7 +16,7 @@
                         >
                 </div>
                 <div class="col-12 col-md-4">
-                    <label for="image" class="fs-5 mt-2">Illustration du quiz</label>
+                    <label for="image" class="fs-5 mt-2 required-label">Illustration du quiz</label>
                     <input v-model="quiz.image"
                         id="image"
                         name="image"
@@ -24,7 +24,7 @@
                         type="text">
                 </div>
                 <div class="col-12 my-4">
-                    <p>Veuillez ajouter entre 5 et 50 questions pour votre quiz<br>
+                    <p>Veuillez ajouter entre 5 et 50 questions pour votre quiz. <strong class="text-danger">L'ensemble des champs doivent être remplis.</strong><br>
                         Attention au choix de l’image et du nom de votre quiz, ce sont les informations que les
                         utilisateurs verront !</p>
                 </div>
