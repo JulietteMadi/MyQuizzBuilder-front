@@ -4,7 +4,7 @@ import { useLocalStorage } from '@vueuse/core';
 export const useQuizStore = defineStore('quizzes', {
     state: () => {
         return {
-            currentQuiz: useLocalStorage('currentQuiz', null),
+            currentQuiz: useLocalStorage('currentQuiz', {}),
             topicsOfCurrentQuiz: useLocalStorage('topicsOfCurrentQuiz', []),
             currentResultArray: useLocalStorage('currentResultArray', []),
             lastPlayedQuiz:useLocalStorage('lastPlayedQuiz', {}),
@@ -40,7 +40,6 @@ export const useQuizStore = defineStore('quizzes', {
                 topicWithBadScore: {},
                 otherTopics: []
             }
-            console.log(this.topicsOfCurrentQuiz);
             this.topicsOfCurrentQuiz.forEach(topic => {
                 if(topicId === topic.id){
                     this.lastQuizTopicsResults.topicWithBadScore = topic;

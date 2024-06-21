@@ -76,7 +76,6 @@ const router = createRouter({
 
 router.beforeEach((to) => {
     const userStore = useUserStore();
-    // userStore.tokenValidate();
     if (userStore.token === '' && !routeWithoutAuth.includes(to.name)) {
         return { name: 'signIn' }
     }

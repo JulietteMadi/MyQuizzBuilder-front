@@ -226,9 +226,11 @@ export default {
             this.topicLoading = false;
             if (resp.status == 200 || resp.status == 204) {
                 this.lastTopics = resp.body;
-                if (this.lastTopics.length > 3) this.reduceArrayLength(this.lastTopics);
+                if (this.lastTopics.length > 3) {
+                    this.reduceArrayLength(this.lastTopics)
+                };
             } else {
-                console.log("status: ", resp.status);
+                console.error("status: ", resp.status);
             }
         },
         async getAllQuizzes(){

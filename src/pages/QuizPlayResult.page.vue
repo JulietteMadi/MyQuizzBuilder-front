@@ -83,7 +83,6 @@ export default {
             const quizId = Object.keys(this.currentQuiz).length === 0 
                 ? this.lastPlayedQuiz.id 
                 : this.currentQuiz.id;
-            console.log(Object.values(this.currentQuiz));
             const resp = await this.$http.post(`/quizzes/${quizId}/play-quiz`, this.payload);
             this.loading = false;
             if(resp.status === 204 || resp.status === 200){

@@ -174,7 +174,6 @@ export default {
         initDemoGuides(){
             this.guides = demoGuides;
             this.availableGuides = demoGuides;
-            console.log("guides: ", this.availableGuides);
         }
     }
 }
