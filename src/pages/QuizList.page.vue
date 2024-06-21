@@ -36,7 +36,7 @@
                 @shareQuiz="shareQuiz"/>
         </div>
         <div v-if="filteredQuiz.length === 0">
-            <h2>Non d'une coccinelle !</h2>
+            <h2>Nom d'une coccinelle !</h2>
             <p>Vous n'avez pas de quiz correspondant à votre recherche ...</p>
             <img src="../assets/mqb-coccinelle.png" alt="Coccinelle de réconfort">
         </div>
