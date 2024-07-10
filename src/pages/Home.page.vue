@@ -91,7 +91,7 @@
         </section>
 
         <!-- My favourite quiz -->
-        <h2>Mes derniers quiz</h2>
+        <h2>Les derniers quiz créés</h2>
         <div v-if="quizLoading" class="text-center my-5">
             <div class="spinner-border spin-color" role="status"></div>
         </div>
@@ -117,7 +117,7 @@
 
     <!-- My favorite Topics -->
     <section class="my-5">
-        <h2>Mes derniers thèmes</h2>
+        <h2>Les derniers thèmes créés</h2>
         <div v-if="topicLoading" class="text-center my-5">
             <div class="spinner-border spin-color" role="status"></div>
         </div>
