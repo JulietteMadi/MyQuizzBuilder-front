@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { useLocalStorage } from '@vueuse/core';
-import axios from 'axios';
+
 
 export const useUserStore = defineStore('users', {
     state: () => {
@@ -13,10 +13,11 @@ export const useUserStore = defineStore('users', {
 
     actions: {
         resetUser() {
+            console.log("hello in store")
             this.token = '';
             this.userEmail = '';
             this.userName = '';
-        }
+        },
     }
 })
 

@@ -3,7 +3,7 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
             <div class="modal-content text-start">
                 <div class="modal-header">
-                    <h2 class="modal-title">{{ quiz.name }}</h2>
+                    <h2 class="modal-title">{{ quiz?.name }}</h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -40,7 +40,7 @@
                     <section class="py-4">
                         <h4 class="pb-2">Questions du quiz:</h4>
                         <div class="mx-3" v-for="(question, index) in quiz.questions">
-                            <div v-if="checkedTopics.length === 0 || checkedTopics.includes(question.topicId)">
+                            <div v-if="checkedTopics?.length === 0 || checkedTopics?.includes(question.topicId)">
                                 <span class="fw-semibold">{{ index + 1 }} - {{ question.name }}</span>
                                 <p class="m-0">Thème: {{ getTopicName(question.topicId) }}</p>
                                 <div v-for="answer in question.answers">

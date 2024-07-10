@@ -75,6 +75,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
+    console.log("to.meta in route: ", to.meta);
     const userStore = useUserStore();
     if (userStore.token === '' && !routeWithoutAuth.includes(to.name)) {
         return { name: 'signIn' }

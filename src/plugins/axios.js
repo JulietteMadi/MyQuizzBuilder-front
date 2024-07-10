@@ -1,6 +1,7 @@
 import axios from 'axios';
+import { useRouter } from 'vue-router';
 
-const ACCEPTED_STATUS = [200, 201, 202, 204, 400];
+const ACCEPTED_STATUS = [200, 201, 202, 204, 400, 401];
 
 export default {
     install: (app) => {
@@ -17,6 +18,12 @@ export default {
             const body = data != '' ? data : null;
             return { status: status, body: body };
         }, (error) => {
+            if (error.response && error.response.status === 401) {
+                console.log("401");
+               /*  router.push("signIn");
+                this.$toast.error("toast-app", `Votre session a expiré veuillez vous reconnecter`); */
+
+            }
             return Promise.reject(error);
         });
         app.config.globalProperties.$http = http;

@@ -147,6 +147,7 @@ import TopicItem from "../components/topics/TopicItem.vue";
 import DeleteDialog from "../components/commons/DeleteDialog.vue";
 import { demoQuizzes } from "../datas/quizzes.js";
 import { demoTopics } from "../datas/topics.js"
+import SignIn from "../components/commons/SignIn.vue";
 
 export default {
     data() {
@@ -229,6 +230,10 @@ export default {
                 if (this.lastTopics.length > 3) {
                     this.reduceArrayLength(this.lastTopics)
                 };
+            } else if(resp.status = 401){
+                this.resetUser();
+                this.$router.push("signIn");
+                this.$toast.error("toast-app", `Votre session a expiré veuillez vous reconnecter`);
             } else {
                 console.error("status: ", resp.status);
             }
@@ -330,4 +335,5 @@ export default {
 .item-height {
     height: 25vh; 
 }
+
 </style>
