@@ -23,7 +23,7 @@ export function moveToPreviousInArray(array, index){
     }
     finalArray.push(array[index])
     finalArray.push(array[index - 1]);
-    for(let i = index + 2; i < array.length; i++){
+    for(let i = index + 1; i < array.length; i++){
         finalArray.push(array[i]);
     }
     return finalArray;                                                                                                                                                                //coucou :)
